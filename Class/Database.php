@@ -373,24 +373,29 @@ class Database
     private function createMatchesTable()
     {
         $columns = [
-            'stagione_id' => 'VARCHAR(20) NOT NULL',
-            'giornata' => 'INT NOT NULL',
-            'squadra_casa_id' => 'INT NOT NULL',
-            'squadra_trasferta_id' => 'INT NOT NULL',
-            'gol_casa' => 'TINYINT',
-            'gol_trasferta' => 'TINYINT',
-            'data_partita' => 'DATETIME',
-            'params' => 'JSON', // eventi o note extra
+            'stagione_id'           => 'VARCHAR(20) NOT NULL',
+            'giornata'              => 'INT NOT NULL',
+            'squadra_casa_id'       => 'INT NOT NULL',
+            'squadra_trasferta_id'  => 'INT NOT NULL',
+            'gol_casa'              => 'TINYINT',
+            'gol_trasferta'         => 'TINYINT',
+            'data_partita'          => 'DATETIME',
+            'params'                => 'JSON',
         ];
         $primaryKey = ['stagione_id', 'giornata', 'squadra_casa_id', 'squadra_trasferta_id'];
 
         if ($this->createTable('partite', $columns, $primaryKey)) {
-            $this->query("ALTER TABLE `partite` ADD CONSTRAINT `fk_partite_stagione` FOREIGN KEY (`stagione_id`) REFERENCES `stagioni`(`id`) ON DELETE CASCADE");
-            $this->query("ALTER TABLE `partite` ADD CONSTRAINT `fk_partite_casa` FOREIGN KEY (`squadra_casa_id`) REFERENCES `squadre`(`id`)");
-            $this->query("ALTER TABLE `partite` ADD CONSTRAINT `fk_partite_trasferta` FOREIGN KEY (`squadra_trasferta_id`) REFERENCES `squadre`(`id`)");
+            // FK su codice_stagione con cascade
+            $this->query("ALTER TABLE `partite` ADD CONSTRAINT `fk_partite_stagione` FOREIGN KEY (`stagione_id`) REFERENCES `stagioni`(`codice_stagione`) ON DELETE CASCADE");
+            // FK su squadra_casa con cascade
+            $this->query("ALTER TABLE `partite` ADD CONSTRAINT `fk_partite_casa` FOREIGN KEY (`squadra_casa_id`) REFERENCES `squadre`(`id`) ON DELETE CASCADE");
+            // FK su squadra_trasferta con cascade
+            $this->query("ALTER TABLE `partite` ADD CONSTRAINT `fk_partite_trasferta` FOREIGN KEY (`squadra_trasferta_id`) REFERENCES `squadre`(`id`) ON DELETE CASCADE");
+            // Check squadre distinte
             $this->query("ALTER TABLE `partite` ADD CONSTRAINT `chk_squadre_distinte` CHECK (squadra_casa_id <> squadra_trasferta_id)");
         }
     }
+
 
 
     /**
