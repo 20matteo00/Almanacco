@@ -19,6 +19,12 @@ if (isset($_POST['logout'])) {
     session_destroy();
 }
 
+// DUMP CHECK
+if (isset($_POST['dump'])) {
+    file_put_contents('backup.sql', $db->dump());
+}
+
+
 // HANDLER FORM
 if (isset($_SESSION['logged']) && $_SESSION['logged']) {
     if (isset($_POST['save_comp']) || isset($_POST['save_squadra']) || isset($_POST['save_stagione']) || isset($_POST['add_partita'])) {
@@ -26,7 +32,9 @@ if (isset($_SESSION['logged']) && $_SESSION['logged']) {
             $db->insert('competizioni', [
                 'nome'    => $_POST['nome'],
                 'descrizione' => $_POST['desc'] ?? '',
-                'params'  => json_encode([])
+                'params'  => json_encode([
+                    'livello' => $_POST['livello'] ?? 0
+                ])
             ]);
         }
         if (isset($_POST['save_squadra'])) {
@@ -106,6 +114,7 @@ $partite = $db->getAll('partite');
     <?php if (isset($_SESSION['logged']) && $_SESSION['logged']): ?>
         <form class="ms-auto" method="post">
             <button class="btn btn-danger" name="logout">Logout</button>
+            <button class="btn btn-success" name="dump">Dump</button>
         </form>
     <?php endif; ?>
     <?php if (!isset($_SESSION['logged'])): ?>
@@ -149,7 +158,11 @@ $partite = $db->getAll('partite');
                                 </div>
                                 <div class="col-auto mb-3">
                                     <label class="form-label">Descrizione</label>
-                                    <input type="text" name="desc" class="form-control">
+                                    <textarea name="desc" class="form-control" rows="3"></textarea>
+                                </div>
+                                <div class="col-auto mb-3">
+                                    <label class="form-label">Livello</label>
+                                    <input type="number" name="livello" class="form-control" required>
                                 </div>
                                 <div class="col-auto mb-3 d-flex align-items-end">
                                     <button type="submit" name="save_comp" class="btn btn-success">Salva</button>
@@ -167,19 +180,22 @@ $partite = $db->getAll('partite');
                             <tr>
                                 <th scope="col">Nome</th>
                                 <th scope="col">Descrizione</th>
+                                <th scope="col">Livello</th>
                                 <th scope="col">Azioni</th> <!-- nuova colonna -->
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (count($competizioni) === 0): ?>
                                 <tr>
-                                    <td colspan="3" class="text-center">Nessuna competizione trovata</td>
+                                    <td colspan="4" class="text-center">Nessuna competizione trovata</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($competizioni as $c): ?>
+                                    <?php $c['params'] = json_decode($c['params'], true); ?>
                                     <tr>
                                         <td><?= htmlspecialchars($c['nome']) ?></td>
                                         <td><?= htmlspecialchars($c['descrizione']) ?></td>
+                                        <td><?= htmlspecialchars($c['params']['livello'] ?? 'N/A') ?></td>
                                         <td>
                                             <!-- FORM MODIFICA/ELIMINA -->
                                             <form method="post" class="d-inline" action="">

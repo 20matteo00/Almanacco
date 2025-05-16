@@ -373,14 +373,14 @@ class Database
     private function createMatchesTable()
     {
         $columns = [
-            'stagione_id'           => 'VARCHAR(20) NOT NULL',
-            'giornata'              => 'INT NOT NULL',
-            'squadra_casa_id'       => 'INT NOT NULL',
-            'squadra_trasferta_id'  => 'INT NOT NULL',
-            'gol_casa'              => 'TINYINT',
-            'gol_trasferta'         => 'TINYINT',
-            'data_partita'          => 'DATETIME',
-            'params'                => 'JSON',
+            'stagione_id' => 'VARCHAR(20) NOT NULL',
+            'giornata' => 'INT NOT NULL',
+            'squadra_casa_id' => 'INT NOT NULL',
+            'squadra_trasferta_id' => 'INT NOT NULL',
+            'gol_casa' => 'TINYINT',
+            'gol_trasferta' => 'TINYINT',
+            'data_partita' => 'DATETIME',
+            'params' => 'JSON',
         ];
         $primaryKey = ['stagione_id', 'giornata', 'squadra_casa_id', 'squadra_trasferta_id'];
 
@@ -483,6 +483,47 @@ class Database
             return false;
         }
     }
+
+    /**
+     * Esegui il dump dell'intero database
+     *
+     * @return string|false Il contenuto SQL del dump o false in caso di errore
+     */
+    public function dump()
+    {
+        if (!$this->isConnected()) {
+            return false;
+        }
+
+        try {
+            $output = '';
+            $tables = $this->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
+
+            foreach ($tables as $table) {
+                $rows = $this->query("SELECT * FROM `{$table}`")->fetchAll(PDO::FETCH_ASSOC);
+                $output .= "// Dump della tabella `{$table}`\n";
+                foreach ($rows as $row) {
+                    $cols = array_map(fn($col) => "`" . str_replace("`", "``", $col) . "`", array_keys($row));
+                    $vals = array_map(function ($val) {
+                        if (is_null($val))
+                            return "NULL";
+                        return "'" . str_replace("'", "''", $val) . "'";
+                    }, array_values($row));
+
+                    $output .= "INSERT INTO `{$table}` (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ");\n";
+                }
+            }
+
+            return $output;
+        } catch (PDOException $e) {
+            if (!$this->ignoreErrors) {
+                throw $e;
+            }
+            return false;
+        }
+    }
+
+
 
     /**
      * Chiudi la connessione al database
