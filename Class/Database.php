@@ -348,9 +348,10 @@ class Database
         $primaryKey = 'codice_stagione';
 
         if ($this->createTable('stagioni', $columns, $primaryKey)) {
-            $this->query("ALTER TABLE `stagioni` ADD CONSTRAINT `fk_stagioni_competizioni` FOREIGN KEY (`competizione_id`) REFERENCES `competizioni`(`id`) ON DELETE CASCADE");
+            $this->query("ALTER TABLE `stagioni` ADD CONSTRAINT `fk_stagioni_competizioni` FOREIGN KEY (`competizione_id`) REFERENCES `competizioni`(`id`) ON DELETE CASCADE ON UPDATE CASCADE" );
         }
     }
+
 
     /**
      * Tabella squadre
@@ -379,7 +380,7 @@ class Database
             'squadra_trasferta_id' => 'INT NOT NULL',
             'gol_casa' => 'TINYINT',
             'gol_trasferta' => 'TINYINT',
-            'data_partita' => 'DATETIME',
+            'data_partita' => 'DATE',
             'params' => 'JSON',
         ];
         $primaryKey = ['stagione_id', 'giornata', 'squadra_casa_id', 'squadra_trasferta_id'];
@@ -510,7 +511,7 @@ class Database
                         return "'" . str_replace("'", "''", $val) . "'";
                     }, array_values($row));
 
-                    $output .= "INSERT INTO `{$table}` (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ");\n";
+                    $output .= "INSERT IGNORE INTO `{$table}` (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ");\n";
                 }
             }
 
