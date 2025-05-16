@@ -3,6 +3,7 @@
 class Helper
 {
     public $menu = [
+        'competitions'
     ];
 
     public $lang = [

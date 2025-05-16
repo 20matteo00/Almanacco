@@ -8,5 +8,11 @@
     "address": "Indirizzo",
     "links": "Link utili",
     "social": "Social",
-    "search": "Cerca"
+    "search": "Cerca",
+
+    "competitions": "Competizioni",
+    "teams": "Squadre",
+
+    "level": "Livello",
+    "state": "Stato"
 }
