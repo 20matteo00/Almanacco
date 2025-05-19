@@ -142,23 +142,41 @@ class Database
     }
 
     /**
-     * Ottieni tutte le righe da una tabella
+     * Ottieni righe da una tabella, con colonne personalizzate e ordinamento
      * 
-     * @param string $table Nome della tabella
-     * @param string $where Condizione WHERE (opzionale)
-     * @param array $params Parametri per la condizione WHERE
+     * @param string       $table    Nome della tabella
+     * @param string|array $columns  Colonne da selezionare (stringa con virgole o array)
+     * @param string       $where    Condizione WHERE (opzionale, senza “WHERE”)
+     * @param array        $params   Parametri per il WHERE
+     * @param string       $orderBy  Clusola ORDER BY (opzionale, senza “ORDER BY”)
      * @return array|false Array di righe o false in caso di errore
      */
-    public function getAll($table, $where = '', $params = [])
-    {
-        $sql = "SELECT * FROM `{$table}`";
-        if (!empty($where)) {
+    public function getAll(
+        string $table,
+        $columns = '*',
+        string $where = '',
+        array $params = [],
+        string $orderBy = ''
+    ) {
+        // colonne: se è array lo trasformo in stringa
+        if (is_array($columns)) {
+            $columns = implode(', ', array_map(fn($c) => "`{$c}`", $columns));
+        }
+
+        $sql = "SELECT {$columns} FROM `{$table}`";
+
+        if ($where !== '') {
             $sql .= " WHERE {$where}";
+        }
+
+        if ($orderBy !== '') {
+            $sql .= " ORDER BY {$orderBy}";
         }
 
         $stmt = $this->query($sql, $params);
         return $stmt ? $stmt->fetchAll() : false;
     }
+
 
     /**
      * Ottieni una singola riga da una tabella
@@ -348,7 +366,7 @@ class Database
         $primaryKey = 'codice_stagione';
 
         if ($this->createTable('stagioni', $columns, $primaryKey)) {
-            $this->query("ALTER TABLE `stagioni` ADD CONSTRAINT `fk_stagioni_competizioni` FOREIGN KEY (`competizione_id`) REFERENCES `competizioni`(`id`) ON DELETE CASCADE ON UPDATE CASCADE" );
+            $this->query("ALTER TABLE `stagioni` ADD CONSTRAINT `fk_stagioni_competizioni` FOREIGN KEY (`competizione_id`) REFERENCES `competizioni`(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
         }
     }
 

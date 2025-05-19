@@ -1,6 +1,7 @@
 // Dump della tabella `competizioni`
-INSERT IGNORE INTO `competizioni` (`id`,`nome`,`descrizione`,`params`) VALUES ('1','Serie A','1929-1943, 1946-in corso','{"livello": "1"}');
+INSERT IGNORE INTO `competizioni` (`id`,`nome`,`descrizione`,`params`) VALUES ('1','Serie A','1929-1943, 1946-in corso','{"stato": "Italia", "livello": "1"}');
 // Dump della tabella `partite`
+INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','9','13','1','1','2024-08-18','[]');
 // Dump della tabella `squadre`
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('1','Inter','{"citta": "Milano", "stadio": "Giuseppe Meazza", "colore_bordo": "#000000", "colore_testo": "#0080ff", "colore_sfondo": "#000000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('2','Juventus','{"citta": "Torino", "stadio": "Allianz Stadium", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
@@ -71,5 +72,7 @@ INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('66','Carpi','{"citt
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('67','Pistoiese','{"citta": "", "stadio": "", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('68','Treviso','{"citta": "", "stadio": "", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
 // Dump della tabella `stagioni`
+INSERT IGNORE INTO `stagioni` (`codice_stagione`,`competizione_id`,`anno`,`squadre`,`params`) VALUES ('1_2023','1','2023','["1", "2", "3", "4", "5", "6", "7", "8", "9", "11", "12", "13", "14", "15", "22", "27", "38", "54", "57", "60"]','[]');
+INSERT IGNORE INTO `stagioni` (`codice_stagione`,`competizione_id`,`anno`,`squadre`,`params`) VALUES ('1_2024','1','2024','["1", "2", "3", "4", "5", "6", "7", "8", "9", "11", "12", "13", "14", "15", "19", "22", "27", "30", "31", "60"]','[]');
 // Dump della tabella `users`
-INSERT IGNORE INTO `users` (`id`,`username`,`password`,`livello`) VALUES ('1','admin','$2y$10$kfTdtwLx5UpWpllLbutLtuCjPOcw1S1H4XvNHup0SD3.Glj6SyhgK','5');
+INSERT IGNORE INTO `users` (`id`,`username`,`password`,`livello`) VALUES ('1','admin','$2y$10$m53tjLs1wB30vUiuV2fXP.1VG/tAG2.eJGMSBk8PAI6y9O.4HYDaO','5');

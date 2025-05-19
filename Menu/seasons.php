@@ -21,7 +21,8 @@ $squadre = $db->getAll("squadre");
             }
             sort($squadre);
             ?>
-                <div class="col"> <div
+            <div class="col">
+                <div
                     class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title fw-bold"><?= htmlspecialchars($nomecompetizione) ?></h5>
@@ -31,11 +32,10 @@ $squadre = $db->getAll("squadre");
                         </p>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="?id=<?= $s['codice_stagione'] ?>" class="btn btn-primary btn-sm">Vai</a>
+                        <a href="?page=seasons_details&id=<?= $s['codice_stagione'] ?>" class="btn btn-primary"><?= $help->getTranslation("view", $langfile) ?></a>
                     </div>
                 </div>
             </div>
         <?php endforeach; ?>
     </div>
 </div>
-
