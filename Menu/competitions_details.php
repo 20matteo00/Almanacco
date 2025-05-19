@@ -15,56 +15,13 @@ $activeTab = $_GET['tab'] ?? 'seasons_list';
 function generate($tab, $help, $langfile, $db)
 {
     switch ($tab) {
-        case 'seasons_list':
-            $stagioni = $db
-                ->query("SELECT * FROM stagioni WHERE competizione_id = ? ORDER BY anno DESC", [$_GET['comp_id']])
-                ->fetchAll();
-?>
-            <h2><?= $help->getTranslation('seasons_list', $langfile) ?></h2>
-            <div class="table-responsive text-center">
-                <table class="table table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th><?= $help->getTranslation("year", $langfile) ?></th>
-                            <th><?= $help->getTranslation("teams", $langfile) ?></th>
-                            <th><?= $help->getTranslation("actions", $langfile) ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($stagioni as $s): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($s['anno'] . '/' . ($s['anno'] + 1)) ?></td>
-                                <td>
-                                    <?php
-                                    $squadre = json_decode($s['squadre'], true);
-                                    foreach ($squadre as $k => $id) {
-                                        $squadre[$k] = $db->getOne('squadre', 'id = ?', [$id])['nome'];
-                                    }
-                                    sort($squadre);
-                                    echo implode(', ', array_map('htmlspecialchars', $squadre));
-                                    ?>
-                                </td>
-                                <td>
-                                    <a href="?page=seasons_details&id=<?= urlencode($s['codice_stagione']) ?>"
-                                        class="btn btn-primary btn-sm">
-                                        <?= $help->getTranslation("view", $langfile) ?>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php
-            break;
-
         case 'participating_teams':
             $rows = $help->getTeamsPartecipant($db, $_GET['comp_id']);
             if (empty($rows)) {
                 echo '<h2>' . $help->getTranslation('no_teams', $langfile) . '</h2>';
                 return;
             }
-        ?>
+            ?>
             <h2><?= $help->getTranslation('participating_teams', $langfile) ?></h2>
             <div class="table-responsive text-center">
                 <table class="table table-striped">
@@ -87,11 +44,10 @@ function generate($tab, $help, $langfile, $db)
                                             $row['anni']
                                         )
                                     )
-                                    ?>
+                                        ?>
                                 </td>
                                 <td>
-                                    <a href="?page=teams_details&id=<?= urlencode($row['id']) ?>"
-                                        class="btn btn-primary btn-sm">
+                                    <a href="?page=teams_details&id=<?= urlencode($row['id']) ?>" class="btn btn-primary btn-sm">
                                         <?= $help->getTranslation('view', $langfile) ?>
                                     </a>
                                 </td>
@@ -100,14 +56,14 @@ function generate($tab, $help, $langfile, $db)
                     </tbody>
                 </table>
             </div>
-        <?php
+            <?php
             break;
 
         case 'direct_clashes':
             // Prepara elenco squadre per select
-            $rows    = $help->getTeamsPartecipant($db, $_GET['comp_id']);
-            $teams   = $help->getTeamsNamebyCompetition($rows);
-            $compId = (int)$_GET['comp_id'];
+            $rows = $help->getTeamsPartecipant($db, $_GET['comp_id']);
+            $teams = $help->getTeamsNamebyCompetition($rows);
+            $compId = (int) $_GET['comp_id'];
             $pattern = $compId . '_%';
             $team1 = $_POST['team1'] ?? null;
             $team2 = $_POST['team2'] ?? null;
@@ -147,21 +103,18 @@ function generate($tab, $help, $langfile, $db)
                 $que,
                 $par
             );
-        ?>
+            ?>
             <h2><?= $help->getTranslation('direct_clashes', $langfile) ?></h2>
 
-            <form method="post"
-                action="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>&tab=direct_clashes"
+            <form method="post" action="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>&tab=direct_clashes"
                 id="teamForm">
                 <div class="row g-3">
                     <div class="col-md-5">
                         <label class="form-label"><?= $help->getTranslation('team_home', $langfile) ?></label>
-                        <select name="team1" class="form-select"
-                            onchange="this.form.submit()">
+                        <select name="team1" class="form-select" onchange="this.form.submit()">
                             <option value=""><?= $help->getTranslation('select_team', $langfile) ?></option>
                             <?php foreach ($teams as list($name, $id)): ?>
-                                <option value="<?= htmlspecialchars($id) ?>"
-                                    <?= ($_POST['team1'] ?? '') == $id ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($id) ?>" <?= ($_POST['team1'] ?? '') == $id ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($name) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -169,12 +122,10 @@ function generate($tab, $help, $langfile, $db)
                     </div>
                     <div class="col-md-5">
                         <label class="form-label"><?= $help->getTranslation('team_away', $langfile) ?></label>
-                        <select name="team2" class="form-select"
-                            onchange="this.form.submit()">
+                        <select name="team2" class="form-select" onchange="this.form.submit()">
                             <option value=""><?= $help->getTranslation('select_team', $langfile) ?></option>
                             <?php foreach ($teams as list($name, $id)): ?>
-                                <option value="<?= htmlspecialchars($id) ?>"
-                                    <?= ($_POST['team2'] ?? '') == $id ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($id) ?>" <?= ($_POST['team2'] ?? '') == $id ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($name) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -185,14 +136,14 @@ function generate($tab, $help, $langfile, $db)
                             <?= $help->getTranslation('location', $langfile) ?>
                         </label>
                         <select name="location" class="form-select" onchange="this.form.submit()">
-                            <option value="all" <?= $loc === 'all'  ? 'selected' : '' ?>>
-                                <?= $help->getTranslation('all',   $langfile) ?>
+                            <option value="all" <?= $loc === 'all' ? 'selected' : '' ?>>
+                                <?= $help->getTranslation('all', $langfile) ?>
                             </option>
                             <option value="home" <?= $loc === 'home' ? 'selected' : '' ?>>
-                                <?= $help->getTranslation('home',  $langfile) ?>
+                                <?= $help->getTranslation('home', $langfile) ?>
                             </option>
                             <option value="away" <?= $loc === 'away' ? 'selected' : '' ?>>
-                                <?= $help->getTranslation('away',  $langfile) ?>
+                                <?= $help->getTranslation('away', $langfile) ?>
                             </option>
                         </select>
                     </div>
@@ -201,7 +152,7 @@ function generate($tab, $help, $langfile, $db)
 
             <?php if (isset($_POST['team1']) && isset($_POST['team2']) && $_POST['team1'] != "" && $_POST['team2'] != "" && !empty($partite)):
                 // Qui generi la tabella degli scontri diretti…
-            ?>
+                ?>
                 <div class="table-responsive text-center mt-4">
                     <table class="table table-striped">
                         <thead class="table-dark">
@@ -215,7 +166,7 @@ function generate($tab, $help, $langfile, $db)
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($partite as $p) : ?>
+                            <?php foreach ($partite as $p): ?>
                                 <tr>
                                     <td><?= $p['giornata'] ?></td>
                                     <td><?= $help->getTeamNameByID($p['squadra_casa_id'], $db) ?></td>
@@ -232,7 +183,49 @@ function generate($tab, $help, $langfile, $db)
                 <div class="alert alert-warning mt-3 text-center">
                     <?= $help->getTranslation('no_match', $langfile) ?>
                 </div>
-<?php endif;
+            <?php endif;
+            break;
+        default:
+            $stagioni = $db
+                ->query("SELECT * FROM stagioni WHERE competizione_id = ? ORDER BY anno DESC", [$_GET['comp_id']])
+                ->fetchAll();
+            ?>
+            <h2><?= $help->getTranslation('seasons_list', $langfile) ?></h2>
+            <div class="table-responsive text-center">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><?= $help->getTranslation("year", $langfile) ?></th>
+                            <th><?= $help->getTranslation("teams", $langfile) ?></th>
+                            <th><?= $help->getTranslation("actions", $langfile) ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($stagioni as $s): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($s['anno'] . '/' . ($s['anno'] + 1)) ?></td>
+                                <td>
+                                    <?php
+                                    $squadre = json_decode($s['squadre'], true);
+                                    foreach ($squadre as $k => $id) {
+                                        $squadre[$k] = $db->getOne('squadre', 'id = ?', [$id])['nome'];
+                                    }
+                                    sort($squadre);
+                                    echo implode(', ', array_map('htmlspecialchars', $squadre));
+                                    ?>
+                                </td>
+                                <td>
+                                    <a href="?page=seasons_details&season_id=<?= urlencode($s['codice_stagione']) ?>"
+                                        class="btn btn-primary btn-sm">
+                                        <?= $help->getTranslation("view", $langfile) ?>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
             break;
     }
 }
@@ -248,8 +241,7 @@ function generate($tab, $help, $langfile, $db)
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body text-center">
                         <a href="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>
-                      &tab=<?= $m ?>"
-                            class="card-title h5 text-decoration-none">
+                      &tab=<?= $m ?>" class="card-title h5 text-decoration-none">
                             <?= $help->getTranslation($m, $langfile) ?>
                         </a>
                     </div>

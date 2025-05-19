@@ -13,6 +13,12 @@ class Helper
         'direct_clashes',
     ];
 
+    public $menu_seasons = [
+        'matches',
+        'ranking',
+        'statistics',
+    ];
+
     public $lang = [
         'it',
         'en',

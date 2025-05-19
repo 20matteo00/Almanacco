@@ -32,7 +32,7 @@ $squadre = $db->getAll("squadre");
                         </p>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="?page=seasons_details&id=<?= $s['codice_stagione'] ?>" class="btn btn-primary"><?= $help->getTranslation("view", $langfile) ?></a>
+                        <a href="?page=seasons_details&season_id=<?= $s['codice_stagione'] ?>" class="btn btn-primary"><?= $help->getTranslation("view", $langfile) ?></a>
                     </div>
                 </div>
             </div>
