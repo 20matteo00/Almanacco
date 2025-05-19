@@ -16,7 +16,7 @@ function generate($tab, $help, $langfile, $db)
 {
     switch ($tab) {
         case 'participating_teams':
-            $rows = $help->getTeamsPartecipant($db, $_GET['comp_id']);
+            $rows = $help->getTeamsPartecipant($_GET['comp_id']);
             if (empty($rows)) {
                 echo '<h2>' . $help->getTranslation('no_teams', $langfile) . '</h2>';
                 return;
@@ -61,7 +61,7 @@ function generate($tab, $help, $langfile, $db)
 
         case 'direct_clashes':
             // Prepara elenco squadre per select
-            $rows = $help->getTeamsPartecipant($db, $_GET['comp_id']);
+            $rows = $help->getTeamsPartecipant($_GET['comp_id']);
             $teams = $help->getTeamsNamebyCompetition($rows);
             $compId = (int) $_GET['comp_id'];
             $pattern = $compId . '_%';
@@ -169,10 +169,10 @@ function generate($tab, $help, $langfile, $db)
                             <?php foreach ($partite as $p): ?>
                                 <tr>
                                     <td><?= $p['giornata'] ?></td>
-                                    <td><?= $help->getTeamNameByID($p['squadra_casa_id'], $db) ?></td>
+                                    <td><?= $help->getTeamNameByID($p['squadra_casa_id']) ?></td>
                                     <td><?= $p['gol_casa'] ?></td>
                                     <td><?= $p['gol_trasferta'] ?></td>
-                                    <td><?= $help->getTeamNameByID($p['squadra_trasferta_id'], $db) ?></td>
+                                    <td><?= $help->getTeamNameByID($p['squadra_trasferta_id']) ?></td>
                                     <td><?= $p['data_partita'] ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -240,8 +240,7 @@ function generate($tab, $help, $langfile, $db)
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body text-center">
-                        <a href="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>
-                      &tab=<?= $m ?>" class="card-title h5 text-decoration-none">
+                        <a href="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>&tab=<?= $m ?>" class="card-title h5 text-decoration-none">
                             <?= $help->getTranslation($m, $langfile) ?>
                         </a>
                     </div>

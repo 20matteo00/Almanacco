@@ -10,7 +10,7 @@ $db->connect();
 $db->createAllTables();
 
 /* Helper */
-$help = new Helper();
+$help = new Helper($db);
 
 /* Session */
 session_start();

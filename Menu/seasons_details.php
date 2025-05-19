@@ -15,9 +15,51 @@ $activeTab = $_GET['tab'] ?? 'matches';
 // Funzione di rendering
 function generate($tab, $help, $langfile, $db)
 {
+    $partite = $db->getAll("partite", '*', 'stagione_id = ?', [$_GET['season_id']], 'giornata ASC, data_partita ASC');
     switch ($tab) {
         case 'ranking':
-
+            $classifica = $help->getClassifica($partite);
+            ?>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle text-center">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th>#</th>
+                            <th>Squadra</th>
+                            <th>G</th>
+                            <th>V</th>
+                            <th>N</th>
+                            <th>P</th>
+                            <th>GF</th>
+                            <th>GS</th>
+                            <th>DR</th>
+                            <th>Punti</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $pos = 1;
+                        foreach ($classifica as $s) {
+                            $dr = $s['gol_fatti'] - $s['gol_subiti'];
+                            echo "<tr>";
+                            echo "<td><strong>{$pos}</strong></td>";
+                            echo "<td>" . $help->getTeamNameByID($s['squadra_id']) . "</td>";
+                            echo "<td>{$s['giocate']}</td>";
+                            echo "<td>{$s['vittorie']}</td>";
+                            echo "<td>{$s['pareggi']}</td>";
+                            echo "<td>{$s['sconfitte']}</td>";
+                            echo "<td>{$s['gol_fatti']}</td>";
+                            echo "<td>{$s['gol_subiti']}</td>";
+                            echo "<td>" . ($dr >= 0 ? "+" : "") . "$dr</td>";
+                            echo "<td><span class='badge bg-primary fs-6'>{$s['punti']}</span></td>";
+                            echo "</tr>";
+                            $pos++;
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
             break;
 
         case 'statistics':
@@ -25,7 +67,6 @@ function generate($tab, $help, $langfile, $db)
             break;
 
         default:
-            $partite = $db->getAll("partite", '*', 'stagione_id = ?', [$_GET['season_id']], 'giornata ASC');
             // raggruppa le partite per giornata
             $grouped = [];
             foreach ($partite as $m) {
@@ -38,41 +79,56 @@ function generate($tab, $help, $langfile, $db)
                 $r = $db->getOne('squadre', 'id = ?', [$id]);
                 return $r ? $r['nome'] : '—';
             }
+            ?>
+            <div class="container">
+                <div class="row">
+                    <?php
+                    $idx = 0;
+                    foreach ($grouped as $giornata => $matches):
+                        // chiudi/apri riga ogni 2 card
+                        if ($idx > 0 && $idx % 2 === 0): ?>
+                        </div>
+                        <div class="row">
+                        <?php endif; ?>
 
-            echo '<div class="container"><div class="row">';
-            $idx = 0;
-            foreach ($grouped as $giornata => $matches) {
-                // chiudi/apri riga ogni 2 card
-                if ($idx > 0 && $idx % 2 === 0) {
-                    echo '</div><div class="row">';
-                }
-
-                echo '<div class="col-md-6 mb-4">';
-                echo '<div class="card h-100">';
-                // header
-                echo '<div class="card-header bg-primary text-white">';
-                echo 'Giornata ' . htmlspecialchars($giornata);
-                echo '</div>';
-                // body
-                echo '<div class="card-body">';
-                foreach ($matches as $m) {
-                    $date = $m['data_partita']
-                        ? date('d/m/Y', strtotime($m['data_partita']))
-                        : '';
-                    $home = htmlspecialchars(getTeamName($m['squadra_casa_id'], $db));
-                    $away = htmlspecialchars(getTeamName($m['squadra_trasferta_id'], $db));
-                    $score = intval($m['gol_casa']) . '‑' . intval($m['gol_trasferta']);
-                    echo "<p class=\"mb-2\"><strong>{$date}</strong> {$home} – {$away} <span class=\"fw-bold\">{$score}</span></p>";
-                }
-                echo '</div>';
-                // footer (vuoto per ora)
-                echo '<div class="card-footer">&nbsp;</div>';
-                echo '</div>';
-                echo '</div>';
-
-                $idx++;
-            }
-            echo '</div></div>';
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <!-- header -->
+                                <div class="card-header bg-primary text-white text-center fw-bold h3">
+                                    <?= $help->getTranslation('day', $langfile) . " " . htmlspecialchars($giornata) ?>
+                                </div>
+                                <!-- body -->
+                                <div class="card-body">
+                                    <?php foreach ($matches as $m):
+                                        $date = $m['data_partita']
+                                            ? date('d/m/Y', strtotime($m['data_partita']))
+                                            : '';
+                                        $home = htmlspecialchars(getTeamName($m['squadra_casa_id'], $db));
+                                        $away = htmlspecialchars(getTeamName($m['squadra_trasferta_id'], $db));
+                                        $score = intval($m['gol_casa']) . '‑' . intval($m['gol_trasferta']);
+                                        echo "
+                                            <div class=\"d-flex flex-wrap justify-content-between align-items-center py-2 border-bottom\">
+                                                <div class=\"d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2\">
+                                                    <span class=\"text-muted small\">{$date}</span>
+                                                    <span class=\"fw-semibold\">{$home} – {$away}</span>
+                                                </div>
+                                                <div class=\"fw-bold fs-5 text-end text-md-start\" style=\"min-width: 70px;\">
+                                                    {$score}
+                                                </div>
+                                            </div>";
+                                    endforeach; ?>
+                                </div>
+                                <!-- footer (vuoto per ora) -->
+                                <div class="card-footer"></div>
+                            </div>
+                        </div>
+                        <?php
+                        $idx++;
+                    endforeach;
+                    ?>
+                </div>
+            </div>
+            <?php
             break;
     }
 }
@@ -85,8 +141,8 @@ function generate($tab, $help, $langfile, $db)
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body text-center">
-                        <a href="?page=seasons_details&season_id=<?= urlencode($_GET['season_id']) ?>
-                      &tab=<?= $m ?>" class="card-title h5 text-decoration-none">
+                        <a href="?page=seasons_details&season_id=<?= urlencode($_GET['season_id']) ?>&tab=<?= $m ?>"
+                            class="card-title h5 text-decoration-none">
                             <?= $help->getTranslation($m, $langfile) ?>
                         </a>
                     </div>

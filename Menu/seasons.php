@@ -1,5 +1,5 @@
 <?php
-$stagioni = $db->getAll("stagioni");
+$stagioni = $db->getAll("stagioni", '*', '', [], 'anno DESC');
 $competizioni = $db->getAll("competizioni");
 $squadre = $db->getAll("squadre");
 ?>

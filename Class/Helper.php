@@ -2,6 +2,7 @@
 
 class Helper
 {
+    protected $db;
     public $menu = [
         'competitions',
         'seasons'
@@ -24,6 +25,11 @@ class Helper
         'en',
     ];
 
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+
     public function loadLanguage($langCode = 'it')
     {
         $path = "Language/$langCode.json";
@@ -41,10 +47,10 @@ class Helper
         return isset($langfile[$key]) ? $langfile[$key] : $key;
     }
 
-    function getTeamsPartecipant($db, $id)
+    function getTeamsPartecipant($id)
     {
         // Prendo tutte le stagioni di questa competizione
-        $teams = $db->getAll("stagioni", '*', "competizione_id = ?", [$_GET['comp_id']]);
+        $teams = $this->db->getAll("stagioni", '*', "competizione_id = ?", [$_GET['comp_id']]);
         $squadreConAnni = [];
 
         // Costruisco l’array id_squadra => [anni...]
@@ -66,13 +72,14 @@ class Helper
         // preparo i dati ordinati per nome
         $rows = [];
         foreach ($squadreConAnni as $id => $anni) {
-            $r = $db->getOne("squadre", "id = ?", [$id]);
-            if (!$r) continue;
+            $r = $this->db->getOne("squadre", "id = ?", [$id]);
+            if (!$r)
+                continue;
             sort($anni);
             $rows[] = [
                 'nome' => $r['nome'],
                 'anni' => $anni,
-                'id'   => $id
+                'id' => $id
             ];
         }
         usort($rows, fn($a, $b) => strcasecmp($a['nome'], $b['nome']));
@@ -93,9 +100,77 @@ class Helper
         return $names;
     }
 
-    function getTeamNameByID($id, $db)
+    function getTeamNameByID($id)
     {
-        $row = $db->getOne("squadre", "id = ?", [$id]);
+        $row = $this->db->getOne("squadre", "id = ?", [$id]);
         return $row ? $row['nome'] : null;
     }
+
+    function getClassifica($partite)
+    {
+        $classifica = [];
+
+        foreach ($partite as $p) {
+            $casa = $p['squadra_casa_id'];
+            $trasferta = $p['squadra_trasferta_id'];
+            $golCasa = $p['gol_casa'];
+            $golTrasferta = $p['gol_trasferta'];
+
+            // Inizializzazione squadre se non presenti
+            foreach ([$casa, $trasferta] as $squadra) {
+                if (!isset($classifica[$squadra])) {
+                    $classifica[$squadra] = [
+                        'squadra_id' => $squadra,
+                        'giocate' => 0,
+                        'vittorie' => 0,
+                        'pareggi' => 0,
+                        'sconfitte' => 0,
+                        'gol_fatti' => 0,
+                        'gol_subiti' => 0,
+                        'punti' => 0,
+                    ];
+                }
+            }
+
+            // Aggiornamento statistiche
+            $classifica[$casa]['giocate']++;
+            $classifica[$trasferta]['giocate']++;
+            $classifica[$casa]['gol_fatti'] += $golCasa;
+            $classifica[$casa]['gol_subiti'] += $golTrasferta;
+            $classifica[$trasferta]['gol_fatti'] += $golTrasferta;
+            $classifica[$trasferta]['gol_subiti'] += $golCasa;
+
+            if ($golCasa > $golTrasferta) {
+                // Casa vince
+                $classifica[$casa]['vittorie']++;
+                $classifica[$trasferta]['sconfitte']++;
+                $classifica[$casa]['punti'] += 3;
+            } elseif ($golCasa < $golTrasferta) {
+                // Trasferta vince
+                $classifica[$trasferta]['vittorie']++;
+                $classifica[$casa]['sconfitte']++;
+                $classifica[$trasferta]['punti'] += 3;
+            } else {
+                // Pareggio
+                $classifica[$casa]['pareggi']++;
+                $classifica[$trasferta]['pareggi']++;
+                $classifica[$casa]['punti'] += 1;
+                $classifica[$trasferta]['punti'] += 1;
+            }
+        }
+
+        // Ordinamento classifica
+        usort($classifica, function ($a, $b) {
+            if ($a['punti'] != $b['punti'])
+                return $b['punti'] - $a['punti'];
+            $diffA = $a['gol_fatti'] - $a['gol_subiti'];
+            $diffB = $b['gol_fatti'] - $b['gol_subiti'];
+            if ($diffA != $diffB)
+                return $diffB - $diffA;
+            return $b['gol_fatti'] - $a['gol_fatti'];
+        });
+
+        return $classifica;
+    }
+
 }
