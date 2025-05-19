@@ -25,7 +25,8 @@ function generate($tab, $help, $langfile, $db)
                     <thead class="table-dark sticky-top">
                         <tr>
                             <th>#</th>
-                            <th>Squadra</th>
+                            <th><?= $help->getTranslation('team', $langfile) ?></th>
+                            <th>Pt</th>
                             <th>G</th>
                             <th>V</th>
                             <th>N</th>
@@ -33,7 +34,6 @@ function generate($tab, $help, $langfile, $db)
                             <th>GF</th>
                             <th>GS</th>
                             <th>DR</th>
-                            <th>Punti</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,6 +44,7 @@ function generate($tab, $help, $langfile, $db)
                             echo "<tr>";
                             echo "<td><strong>{$pos}</strong></td>";
                             echo "<td>" . $help->getTeamNameByID($s['squadra_id']) . "</td>";
+                            echo "<td><span class='badge bg-primary fs-6'>{$s['punti']}</span></td>";
                             echo "<td>{$s['giocate']}</td>";
                             echo "<td>{$s['vittorie']}</td>";
                             echo "<td>{$s['pareggi']}</td>";
@@ -51,7 +52,6 @@ function generate($tab, $help, $langfile, $db)
                             echo "<td>{$s['gol_fatti']}</td>";
                             echo "<td>{$s['gol_subiti']}</td>";
                             echo "<td>" . ($dr >= 0 ? "+" : "") . "$dr</td>";
-                            echo "<td><span class='badge bg-primary fs-6'>{$s['punti']}</span></td>";
                             echo "</tr>";
                             $pos++;
                         }
