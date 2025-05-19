@@ -4,7 +4,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
         <!-- Brand -->
-        <a class="navbar-brand fw-bold" href="index.php?lang=<?= $lang ?>"><?= $langfile['site_name'] ?></a>
+        <a class="navbar-brand fw-bold" href="index.php?lang=<?= $lang ?>"><?= $help->getTranslation('site_name', $langfile) ?></a>
 
         <!-- Toggler for mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -17,7 +17,7 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <?php foreach ($help->menu as $m): ?>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="?page=<?= $m ?>&lang=<?= $lang ?>"><?= $langfile[$m] ?></a>
+                        <a class="nav-link active" aria-current="page" href="?page=<?= $m ?>&lang=<?= $lang ?>"><?= $help->getTranslation($m, $langfile) ?></a>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -45,9 +45,9 @@
             <div>
                 <!-- Search form -->
                 <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="<?= $langfile['search'] ?>…"
-                        aria-label="<?= $langfile['search'] ?>">
-                    <button class="btn btn-outline-primary" type="submit"><?= $langfile['search'] ?></button>
+                    <input class="form-control me-2" type="search" placeholder="<?= $help->getTranslation('search', $langfile) ?>…"
+                        aria-label="<?= $help->getTranslation('search', $langfile) ?>">
+                    <button class="btn btn-outline-primary" type="submit"><?= $help->getTranslation('search', $langfile) ?></button>
                 </form>
             </div>
         </div>

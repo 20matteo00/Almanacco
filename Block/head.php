@@ -3,8 +3,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-<title><?= $langfile['site_name'] ?></title>
-<meta name="description" content="<?= $langfile['site_description'] ?>">
+<title><?= $help->getTranslation('site_name', $langfile) ?></title>
+<meta name="description" content="<?= $help->getTranslation('site_description', $langfile) ?>">
 <meta name="keywords" content="soccer, football, simulation">
 <meta name="author" content="Matteo Moscone">
 

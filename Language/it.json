@@ -11,8 +11,16 @@
     "search": "Cerca",
 
     "competitions": "Competizioni",
+    "competition": "Competizione",
+    "seasons": "Stagioni",
+    "season": "Stagione",
     "teams": "Squadre",
+    "team": "Squadra",
 
     "level": "Livello",
-    "state": "Stato"
+    "state": "Stato",
+
+    "seasons_list": "Elenco delle stagioni",
+    "participating_teams": "Squadre partecipanti",
+    "direct_clashes": "Scontri diretti"
 }
