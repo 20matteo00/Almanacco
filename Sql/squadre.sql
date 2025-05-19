@@ -1,16 +1,15 @@
-// Dump della tabella `squadre`
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('1','Inter','{"citta": "Milano", "stadio": "Giuseppe Meazza", "colore_bordo": "#000000", "colore_testo": "#0080ff", "colore_sfondo": "#000000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('2','Juventus','{"citta": "Torino", "stadio": "Allianz Stadium", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('3','Roma','{"citta": "Roma", "stadio": "Olimpico", "colore_bordo": "#ffd700", "colore_testo": "#aa0000", "colore_sfondo": "#ff8000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('4','Milan','{"citta": "Milano", "stadio": "Giuseppe Meazza", "colore_bordo": "#000000", "colore_testo": "#ff0000", "colore_sfondo": "#000000"}');
-INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('5','Fiorentina','{"citta": "Firenze", "stadio": "Artemio Franchi", "colore_bordo": "#8A2BE2", "colore_testo": "#ffffff", "colore_sfondo": "#8A2BE2"}');
+INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('5','Fiorentina','{"citta": "Firenze", "stadio": "Artemio Franchi", "colore_bordo": "#ff0000", "colore_testo": "#ffffff", "colore_sfondo": "#8a2be2"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('6','Lazio','{"citta": "Roma", "stadio": "Olimpico", "colore_bordo": "#87ceeb", "colore_testo": "#ffffff", "colore_sfondo": "#87ceeb"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('7','Torino','{"citta": "Torino", "stadio": "Olimpico Grande Torino", "colore_bordo": "#800000", "colore_testo": "#ffffff", "colore_sfondo": "#800000"}');
-INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('8','Napoli','{"citta": "Napoli", "stadio": "Diego Armando Maradona", "colore_bordo": "#0076b6", "colore_testo": "#ffffff", "colore_sfondo": "#0076b6"}');
-INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('9','Bologna','{"citta": "Bologna", "stadio": "Renato Dall''Ara", "colore_bordo": "#aa0000", "colore_testo": "#ffffff", "colore_sfondo": "#aa0000"}');
-INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('10','Sampdoria','{"citta": "Genova", "stadio": "Luigi Ferraris", "colore_bordo": "#000080", "colore_testo": "#ffffff", "colore_sfondo": "#000080"}');
-INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('11','Atalanta','{"citta": "Bergamo", "stadio": "Gewiss Stadium", "colore_bordo": "#0000ff", "colore_testo": "#000000", "colore_sfondo": "#0000ff"}');
-INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('12','Genoa','{"citta": "Genova", "stadio": "Luigi Ferraris", "colore_bordo": "#ff0000", "colore_testo": "#0000ff", "colore_sfondo": "#ff0000"}');
+INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('8','Napoli','{"citta": "Napoli", "stadio": "Diego Armando Maradona", "colore_bordo": "#00ffff", "colore_testo": "#ffffff", "colore_sfondo": "#00ffff"}');
+INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('9','Bologna','{"citta": "Bologna", "stadio": "Renato Dall''Ara", "colore_bordo": "#ff0000", "colore_testo": "#0080ff", "colore_sfondo": "#ff0000"}');
+INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('10','Sampdoria','{"citta": "Genova", "stadio": "Luigi Ferraris", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#0000ff"}');
+INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('11','Atalanta','{"citta": "Bergamo", "stadio": "Gewiss Stadium", "colore_bordo": "#000000", "colore_testo": "#000000", "colore_sfondo": "#0080c0"}');
+INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('12','Genoa','{"citta": "Genova", "stadio": "Luigi Ferraris", "colore_bordo": "#ffff00", "colore_testo": "#0000ff", "colore_sfondo": "#ff0000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('13','Udinese','{"citta": "Udine", "stadio": "Bluenergy Stadium", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('14','Cagliari','{"citta": "Cagliari", "stadio": "Unipol Domus", "colore_bordo": "#ff0000", "colore_testo": "#0000ff", "colore_sfondo": "#ff0000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('15','Verona','{"citta": "Verona", "stadio": "Marcantonio Bentegodi", "colore_bordo": "#ffff00", "colore_testo": "#0000ff", "colore_sfondo": "#ffff00"}');

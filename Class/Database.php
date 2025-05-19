@@ -522,7 +522,7 @@ class Database
             }
 
             foreach ($tables as $table) {
-                $output = "// Dump della tabella `{$table}`\n";
+                $output = "";
                 $rows = $this->query("SELECT * FROM `{$table}`")->fetchAll(PDO::FETCH_ASSOC);
 
                 foreach ($rows as $row) {

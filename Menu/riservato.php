@@ -226,7 +226,7 @@ $partite = $db->getAll('partite');
             </div>
             <div class="col-lg-6">
                 <h3>Elenco Competizioni</h3>
-                <div class="table-responsive">
+                <div class="table-responsive my-max-table">
                     <table class="table table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
@@ -309,7 +309,7 @@ $partite = $db->getAll('partite');
             </div>
             <div class="col-lg-6">
                 <h3>Elenco Squadre</h3>
-                <div class="table-responsive">
+                <div class="table-responsive my-max-table">
                     <table class="table table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
@@ -399,7 +399,7 @@ $partite = $db->getAll('partite');
             </div>
             <div class="col-lg-6">
                 <h3>Elenco Stagioni</h3>
-                <div class="table-responsive">
+                <div class="table-responsive my-max-table">
                     <table class="table table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
@@ -551,7 +551,7 @@ $partite = $db->getAll('partite');
             </div>
             <div class="col-lg-6">
                 <h3>Elenco Partite</h3>
-                <div class="table-responsive">
+                <div class="table-responsive my-max-table">
                     <table class="table table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
