@@ -515,25 +515,33 @@ class Database
         }
 
         try {
-            $output = '';
             $tables = $this->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
+            // Controlla se cartella Sql esiste, altrimenti la crea
+            if (!is_dir('Sql')) {
+                mkdir('Sql', 0777, true);
+            }
 
             foreach ($tables as $table) {
+                $output = "// Dump della tabella `{$table}`\n";
                 $rows = $this->query("SELECT * FROM `{$table}`")->fetchAll(PDO::FETCH_ASSOC);
-                $output .= "// Dump della tabella `{$table}`\n";
+
                 foreach ($rows as $row) {
                     $cols = array_map(fn($col) => "`" . str_replace("`", "``", $col) . "`", array_keys($row));
                     $vals = array_map(function ($val) {
-                        if (is_null($val))
+                        if (is_null($val)) {
                             return "NULL";
+                        }
                         return "'" . str_replace("'", "''", $val) . "'";
                     }, array_values($row));
 
                     $output .= "INSERT IGNORE INTO `{$table}` (" . implode(',', $cols) . ") VALUES (" . implode(',', $vals) . ");\n";
                 }
+
+                // Salva il dump della tabella in un file separato
+                file_put_contents("Sql/{$table}.sql", $output);
             }
 
-            return $output;
+            return true;
         } catch (PDOException $e) {
             if (!$this->ignoreErrors) {
                 throw $e;

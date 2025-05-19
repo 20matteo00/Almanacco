@@ -1,0 +1,3 @@
+// Dump della tabella `stagioni`
+INSERT IGNORE INTO `stagioni` (`codice_stagione`,`competizione_id`,`anno`,`squadre`,`params`) VALUES ('1_2023','1','2023','["1", "2", "3", "4", "5", "6", "7", "8", "9", "11", "12", "13", "14", "15", "22", "27", "38", "54", "57", "60"]','[]');
+INSERT IGNORE INTO `stagioni` (`codice_stagione`,`competizione_id`,`anno`,`squadre`,`params`) VALUES ('1_2024','1','2024','["1", "2", "3", "4", "5", "6", "7", "8", "9", "11", "12", "13", "14", "15", "19", "22", "27", "30", "31", "60"]','[]');

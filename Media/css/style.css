@@ -4,6 +4,5 @@ a{
 
 
 .table-responsive {
-    max-height: 250px;
     overflow: auto;
 }

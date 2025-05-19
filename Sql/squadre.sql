@@ -1,46 +1,3 @@
-// Dump della tabella `competizioni`
-INSERT IGNORE INTO `competizioni` (`id`,`nome`,`descrizione`,`params`) VALUES ('1','Serie A','1929-1943, 1946-in corso','{"stato": "Italia", "livello": "1"}');
-// Dump della tabella `partite`
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','2','30','3','0','2024-08-19','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','4','7','2','2','2024-08-17','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','6','31','3','1','2024-08-18','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','9','13','1','1','2024-08-18','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','12','1','2','2','2024-08-17','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','14','3','0','0','2024-08-18','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','15','8','3','0','2024-08-18','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','19','5','1','1','2024-08-18','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','22','11','0','4','2024-08-19','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','1','27','60','0','0','2024-08-17','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','1','22','2','0','2024-08-24','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','3','27','1','2','2024-08-25','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','5','31','0','0','2024-08-25','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','7','11','2','1','2024-08-26','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','8','9','3','0','2024-08-25','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','13','6','2','1','2024-08-24','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','14','30','1','1','2024-08-26','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','15','2','0','3','2024-08-26','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','19','4','2','1','2024-08-24','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','2','60','12','0','1','2024-08-26','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','1','11','4','0','2024-08-30','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','2','3','0','0','2024-09-01','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','5','60','2','2','2024-09-01','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','6','4','2','2','2024-08-31','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','8','19','2','1','2024-09-01','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','9','27','1','1','2024-08-31','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','12','15','0','2','2024-09-01','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','13','30','1','0','2024-09-01','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','22','14','1','0','2024-09-01','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','3','31','7','0','1','2024-08-30','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','4','31','4','0','2024-09-14','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','6','15','2','1','2024-09-16','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','7','22','0','0','2024-09-15','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','11','5','3','2','2024-09-15','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','12','3','1','1','2024-09-15','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','14','8','0','4','2024-09-15','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','19','13','2','3','2024-09-16','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','27','2','0','0','2024-09-15','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','30','9','2','2','2024-09-14','[]');
-INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','4','60','1','1','1','2024-09-15','[]');
 // Dump della tabella `squadre`
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('1','Inter','{"citta": "Milano", "stadio": "Giuseppe Meazza", "colore_bordo": "#000000", "colore_testo": "#0080ff", "colore_sfondo": "#000000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('2','Juventus','{"citta": "Torino", "stadio": "Allianz Stadium", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
@@ -110,8 +67,3 @@ INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('65','Ternana','{"ci
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('66','Carpi','{"citta": "", "stadio": "", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('67','Pistoiese','{"citta": "", "stadio": "", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
 INSERT IGNORE INTO `squadre` (`id`,`nome`,`params`) VALUES ('68','Treviso','{"citta": "", "stadio": "", "colore_bordo": "#000000", "colore_testo": "#ffffff", "colore_sfondo": "#000000"}');
-// Dump della tabella `stagioni`
-INSERT IGNORE INTO `stagioni` (`codice_stagione`,`competizione_id`,`anno`,`squadre`,`params`) VALUES ('1_2023','1','2023','["1", "2", "3", "4", "5", "6", "7", "8", "9", "11", "12", "13", "14", "15", "22", "27", "38", "54", "57", "60"]','[]');
-INSERT IGNORE INTO `stagioni` (`codice_stagione`,`competizione_id`,`anno`,`squadre`,`params`) VALUES ('1_2024','1','2024','["1", "2", "3", "4", "5", "6", "7", "8", "9", "11", "12", "13", "14", "15", "19", "22", "27", "30", "31", "60"]','[]');
-// Dump della tabella `users`
-INSERT IGNORE INTO `users` (`id`,`username`,`password`,`livello`) VALUES ('1','admin','$2y$10$m53tjLs1wB30vUiuV2fXP.1VG/tAG2.eJGMSBk8PAI6y9O.4HYDaO','5');
