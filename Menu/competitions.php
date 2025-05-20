@@ -10,24 +10,27 @@ $competizioni = $db->getAll("competizioni");
             <?php
             $params = json_decode($c['params'], true);
             ?>
-                <div class="col"> <div
-                    class="card h-100 shadow-sm">
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header">
+                        <h1 class="card-title fw-bold text-center text-uppercase"><?= htmlspecialchars($c['nome']) ?></h1>
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title fw-bold"><?= htmlspecialchars($c['nome']) ?></h5>
                         <?php if (!empty($c['descrizione'])): ?>
-                            <p class="card-text"><?= nl2br(htmlspecialchars($c['descrizione'])) ?></p>
+                            <p class="card-text text-center"><?= nl2br(htmlspecialchars($c['descrizione'])) ?></p>
                         <?php endif; ?>
                         <p class="card-text">
-                            <strong><?= $help->getTranslation('level', $langfile) ?>: </strong> <?= $params['livello'] ?? "N/A" ?><br>
-                            <strong><?= $help->getTranslation('state', $langfile) ?>: </strong> <?= $params['stato'] ?? "N/A" ?><br>
+                            <strong><?= $help->getTranslation('level', $langfile) ?>: </strong>
+                            <?= $params['livello'] ?? "N/A" ?><br>
+                            <strong><?= $help->getTranslation('state', $langfile) ?>: </strong>
+                            <?= $params['stato'] ?? "N/A" ?><br>
                         </p>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="?page=competitions_details&comp_id=<?= $c['id'] ?>" class="btn btn-primary btn-sm">Vai</a>
+                        <a href="?page=competitions_details&comp_id=<?= $c['id'] ?>" class="btn btn-success w-100"><?= $help->getTranslation('go', $langfile) ?></a>
                     </div>
                 </div>
             </div>
         <?php endforeach; ?>
     </div>
 </div>
-

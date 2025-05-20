@@ -156,7 +156,7 @@ if (isset($_POST['update_comp']) || isset($_POST['update_squadra']) || isset($_P
 $competizioni = $db->getAll('competizioni');
 $squadre = $db->getAll('squadre');
 $stagioni = $db->getAll('stagioni');
-$partite = $db->getAll('partite');
+$partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
 ?>
 
 <div class="container">

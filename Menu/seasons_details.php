@@ -39,19 +39,32 @@ function generate($tab, $help, $langfile, $db)
                     <tbody>
                         <?php
                         $pos = 1;
+                        $season_params = json_decode($help->getParamsbyID($_GET['season_id'], "stagioni", "codice_stagione"));
+                        $promo = $season_params->Promozione;
+                        $retro = $season_params->Retrocessione;
+                        $totsquadre = count($classifica);
+                        $postoretro = $totsquadre - $retro;
                         foreach ($classifica as $s) {
-                            $dr = $s['gol_fatti'] - $s['gol_subiti'];
+                            $params = json_decode($help->getParamsbyID($s['squadra_id'], "squadre"));
+                            // Assegna il badge in base alla posizione
+                            if ($pos <= $promo) {
+                                $badge = "success";  // Badge per le squadre in promozione
+                            } elseif ($pos > $postoretro) {
+                                $badge = "danger";  // Badge per le squadre in retrocessione
+                            } else {
+                                $badge = "dark";  // Badge per le squadre normali
+                            }
                             echo "<tr>";
                             echo "<td><strong>{$pos}</strong></td>";
-                            echo "<td>" . $help->getTeamNameByID($s['squadra_id']) . "</td>";
-                            echo "<td><span class='badge bg-primary fs-6'>{$s['punti']}</span></td>";
+                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='background-color: " . $params->colore_sfondo . "; color: " . $params->colore_testo . "; border: 1px solid " . $params->colore_bordo . ";'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
+                            echo "<td><span class='badge bg-{$badge} fs-6'>{$s['punti']}</span></td>";
                             echo "<td>{$s['giocate']}</td>";
                             echo "<td>{$s['vittorie']}</td>";
                             echo "<td>{$s['pareggi']}</td>";
                             echo "<td>{$s['sconfitte']}</td>";
                             echo "<td>{$s['gol_fatti']}</td>";
                             echo "<td>{$s['gol_subiti']}</td>";
-                            echo "<td>" . ($dr >= 0 ? "+" : "") . "$dr</td>";
+                            echo "<td>{$s['diff_reti']}</td>";
                             echo "</tr>";
                             $pos++;
                         }

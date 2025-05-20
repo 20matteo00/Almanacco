@@ -34,8 +34,17 @@ function generate($tab, $help, $langfile, $db)
                     </thead>
                     <tbody>
                         <?php foreach ($rows as $row): ?>
+                            <?php $params = json_decode($row['params'], true); ?>
                             <tr>
-                                <td><?= htmlspecialchars($row['nome']) ?></td>
+                                <td>
+                                    <div style="
+                                    background-color:<?= $params['colore_sfondo'] ?> !important;
+                                    border-color:<?= $params['colore_bordo'] ?> !important;
+                                    color:<?= $params['colore_testo'] ?> !important;
+                                    " class="rounded-pill p-3 border border-3">
+                                        <?= htmlspecialchars($row['nome']) ?>
+                                    </div>
+                                </td>
                                 <td>
                                     <?= implode(
                                         ', ',
@@ -101,7 +110,8 @@ function generate($tab, $help, $langfile, $db)
                 'partite',
                 '*',
                 $que,
-                $par
+                $par,
+                "data_partita DESC"
             );
             ?>
             <h2><?= $help->getTranslation('direct_clashes', $langfile) ?></h2>
@@ -153,10 +163,124 @@ function generate($tab, $help, $langfile, $db)
             <?php if (isset($_POST['team1']) && isset($_POST['team2']) && $_POST['team1'] != "" && $_POST['team2'] != "" && !empty($partite)):
                 // Qui generi la tabella degli scontri diretti…
                 ?>
+                <?php $classifica = $help->getClassifica($partite); ?>
+                <div class="info-clashes mt-4">
+                    <div class="row">
+                        <!-- Squadra 1 -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header h1 fw-bold text-center"><?= $help->getTeamNameByID($_POST['team1']) ?></div>
+                                <div class="card-body">
+                                    <?php
+                                    // Trova la squadra di team1 nella classifica
+                                    $team1_id = $_POST['team1'];
+                                    $team1 = null;
+                                    foreach ($classifica as $team) {
+                                        if ($team['squadra_id'] == $team1_id) {
+                                            $team1 = $team;
+                                            break;
+                                        }
+                                    }
+
+                                    // Mostra le informazioni solo se la squadra esiste nella classifica
+                                    if ($team1):
+                                        ?>
+                                        <ul class="list-group fw-bold">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('played', $langfile) ?>
+                                                <span class="badge bg-info rounded-pill"><?= $team1['giocate'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('wins', $langfile) ?>
+                                                <span class="badge bg-success rounded-pill"><?= $team1['vittorie'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('draws', $langfile) ?>
+                                                <span class="badge bg-warning rounded-pill"><?= $team1['pareggi'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('loses', $langfile) ?>
+                                                <span class="badge bg-danger rounded-pill"><?= $team1['sconfitte'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('goals_scored', $langfile) ?>
+                                                <span class="badge bg-success rounded-pill"><?= $team1['gol_fatti'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('goals_conceded', $langfile) ?>
+                                                <span class="badge bg-danger rounded-pill"><?= $team1['gol_subiti'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('goals_difference', $langfile) ?>
+                                                <span class="badge bg-dark rounded-pill"><?= $team1['diff_reti'] ?></span>
+                                            </li>
+                                        </ul>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Squadra 2 -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header h1 fw-bold text-center"><?= $help->getTeamNameByID($_POST['team2']) ?></div>
+                                <div class="card-body">
+                                    <?php
+                                    // Trova la squadra di team2 nella classifica
+                                    $team2_id = $_POST['team2'];
+                                    $team2 = null;
+                                    foreach ($classifica as $team) {
+                                        if ($team['squadra_id'] == $team2_id) {
+                                            $team2 = $team;
+                                            break;
+                                        }
+                                    }
+
+                                    // Mostra le informazioni solo se la squadra esiste nella classifica
+                                    if ($team2):
+                                        ?>
+                                        <ul class="list-group fw-bold">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('played', $langfile) ?>
+                                                <span class="badge bg-info rounded-pill"><?= $team2['giocate'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('wins', $langfile) ?>
+                                                <span class="badge bg-success rounded-pill"><?= $team2['vittorie'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('draws', $langfile) ?>
+                                                <span class="badge bg-warning rounded-pill"><?= $team2['pareggi'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('loses', $langfile) ?>
+                                                <span class="badge bg-danger rounded-pill"><?= $team2['sconfitte'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('goals_scored', $langfile) ?>
+                                                <span class="badge bg-success rounded-pill"><?= $team2['gol_fatti'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('goals_conceded', $langfile) ?>
+                                                <span class="badge bg-danger rounded-pill"><?= $team2['gol_subiti'] ?></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <?= $help->getTranslation('goals_difference', $langfile) ?>
+                                                <span class="badge bg-dark rounded-pill"><?= $team2['diff_reti'] ?></span>
+                                            </li>
+                                        </ul>
+
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive text-center mt-4">
                     <table class="table table-striped">
                         <thead class="table-dark">
                             <tr>
+                                <th><?= $help->getTranslation('season', $langfile) ?></th>
                                 <th><?= $help->getTranslation('day', $langfile) ?></th>
                                 <th><?= $help->getTranslation('team_home', $langfile) ?></th>
                                 <th><?= $help->getTranslation('gol_home', $langfile) ?></th>
@@ -168,6 +292,7 @@ function generate($tab, $help, $langfile, $db)
                         <tbody>
                             <?php foreach ($partite as $p): ?>
                                 <tr>
+                                    <td><?= explode("_", $p['stagione_id'])[1] ?></td>
                                     <td><?= $p['giornata'] ?></td>
                                     <td><?= $help->getTeamNameByID($p['squadra_casa_id']) ?></td>
                                     <td><?= $p['gol_casa'] ?></td>
@@ -179,6 +304,8 @@ function generate($tab, $help, $langfile, $db)
                         </tbody>
                     </table>
                 </div>
+
+
             <?php else: ?>
                 <div class="alert alert-warning mt-3 text-center">
                     <?= $help->getTranslation('no_match', $langfile) ?>
@@ -240,7 +367,8 @@ function generate($tab, $help, $langfile, $db)
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body text-center">
-                        <a href="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>&tab=<?= $m ?>" class="card-title h5 text-decoration-none">
+                        <a href="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>&tab=<?= $m ?>"
+                            class="card-title h5 text-decoration-none">
                             <?= $help->getTranslation($m, $langfile) ?>
                         </a>
                     </div>

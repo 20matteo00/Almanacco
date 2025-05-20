@@ -79,7 +79,8 @@ class Helper
             $rows[] = [
                 'nome' => $r['nome'],
                 'anni' => $anni,
-                'id' => $id
+                'id' => $id,
+                'params' => $r['params']
             ];
         }
         usort($rows, fn($a, $b) => strcasecmp($a['nome'], $b['nome']));
@@ -106,6 +107,11 @@ class Helper
         return $row ? $row['nome'] : null;
     }
 
+    function getParamsbyID($id, $table, $cod = "id"){
+        $r = $this->db->getOne("{$table}", "{$cod} = ?", [$id]);
+        return $r['params'];
+    }
+
     function getClassifica($partite)
     {
         $classifica = [];
@@ -127,6 +133,7 @@ class Helper
                         'sconfitte' => 0,
                         'gol_fatti' => 0,
                         'gol_subiti' => 0,
+                        'diff_reti' => 0,
                         'punti' => 0,
                     ];
                 }
@@ -139,6 +146,14 @@ class Helper
             $classifica[$casa]['gol_subiti'] += $golTrasferta;
             $classifica[$trasferta]['gol_fatti'] += $golTrasferta;
             $classifica[$trasferta]['gol_subiti'] += $golCasa;
+
+            // Calcolo della differenza reti separatamente
+            $diffCasa = $golCasa - $golTrasferta;
+            $diffTrasferta = $golTrasferta - $golCasa;
+
+            // Aggiorno la differenza reti
+            $classifica[$casa]['diff_reti'] += $diffCasa;
+            $classifica[$trasferta]['diff_reti'] += $diffTrasferta;
 
             if ($golCasa > $golTrasferta) {
                 // Casa vince
@@ -163,10 +178,8 @@ class Helper
         usort($classifica, function ($a, $b) {
             if ($a['punti'] != $b['punti'])
                 return $b['punti'] - $a['punti'];
-            $diffA = $a['gol_fatti'] - $a['gol_subiti'];
-            $diffB = $b['gol_fatti'] - $b['gol_subiti'];
-            if ($diffA != $diffB)
-                return $diffB - $diffA;
+            if ($a['diff_reti'] != $b['diff_reti'])
+                return $b['diff_reti'] - $a['diff_reti'];
             return $b['gol_fatti'] - $a['gol_fatti'];
         });
 
