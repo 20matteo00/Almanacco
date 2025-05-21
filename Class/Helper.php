@@ -5,7 +5,8 @@ class Helper
     protected $db;
     public $menu = [
         'competitions',
-        'seasons'
+        'seasons',
+        'teams'
     ];
 
     public $menu_competitions = [
@@ -112,6 +113,14 @@ class Helper
     {
         $r = $this->db->getOne("{$table}", "{$cod} = ?", [$id]);
         return $r['params'];
+    }
+
+    function createTeam(string $sfondo, string $testo, string $bordo): string
+    {
+        // Nota: htmlspecialchars non serve qui perché usiamo solo colori validi (#xxxxxx)
+        return "background-color: {$sfondo}; "
+            . "color: {$testo}; "
+            . "border: 3px solid {$bordo};";
     }
 
     function getClassifica($partite, $ext = '')

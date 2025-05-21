@@ -59,7 +59,6 @@ function generate($tab, $help, $langfile, $db)
     $classifica = $help->getClassifica($partite, $ext);
     switch ($tab) {
         case 'table':
-
             ?>
             <div class="mini-menu my-4">
                 <form action="" method="post" class="d-flex flex-column align-items-center gap-3">

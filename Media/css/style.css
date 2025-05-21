@@ -1,4 +1,4 @@
-a{
+a {
     text-decoration: none;
 }
 
@@ -9,4 +9,29 @@ a{
 .matchtable tbody .rounded-pill {
     display: inline-block;
     min-width: 150px;
+}
+
+/*Tooltip*/
+.team-wrapper {
+    position: relative;
+}
+
+.team-tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    white-space: nowrap;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 10;
+}
+
+.team-wrapper:hover .team-tooltip {
+    opacity: 1;
+    visibility: visible;
 }

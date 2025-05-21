@@ -19,6 +19,8 @@
 
     "level": "Livello",
     "state": "Stato",
+    "city": "Città",
+    "stadium": "Stadio",
     "year": "Anno",
     "years": "Anni",
     "day": "Giornata",
