@@ -14,6 +14,7 @@ $activeTab = $_GET['tab'] ?? 'seasons_list';
 // Funzione di rendering
 function generate($tab, $help, $langfile, $db)
 {
+    $stagioni = $db->getAll("stagioni", '*', 'competizione_id = ?', [$_GET['comp_id']], "anno DESC");
     switch ($tab) {
         case 'participating_teams':
             $rows = $help->getTeamsPartecipant($_GET['comp_id']);
@@ -34,14 +35,17 @@ function generate($tab, $help, $langfile, $db)
                     </thead>
                     <tbody>
                         <?php foreach ($rows as $row): ?>
-                            <?php $params = json_decode($row['params'], true); ?>
+                            <?php
+                            $params = json_decode($row['params']);
+                            $style = $help->createTeam(
+                                $params->colore_sfondo,
+                                $params->colore_testo,
+                                $params->colore_bordo
+                            );
+                            ?>
                             <tr>
                                 <td>
-                                    <div style="
-                                    background-color:<?= $params['colore_sfondo'] ?> !important;
-                                    border-color:<?= $params['colore_bordo'] ?> !important;
-                                    color:<?= $params['colore_testo'] ?> !important;
-                                    " class="rounded-pill p-3 border border-3">
+                                    <div style="<?= $style ?>" class="fw-bold border rounded-pill p-3 fs-5">
                                         <?= htmlspecialchars($row['nome']) ?>
                                     </div>
                                 </td>
@@ -312,10 +316,132 @@ function generate($tab, $help, $langfile, $db)
                 </div>
             <?php endif;
             break;
+
+        case 'champions':
+            $winners = $help->getChampions($stagioni);
+            ?>
+            <h2><?= $help->getTranslation('champions', $langfile) ?></h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered text-center align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><?= $help->getTranslation('team', $langfile) ?></th>
+                            <th><?= $help->getTranslation('vittorie', $langfile) ?></th>
+                            <th><?= $help->getTranslation('year', $langfile) ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($winners as $teamId => $info): ?>
+                            <?php
+                            $params = $help->getParamsbyID($teamId, "squadre");
+                            $params = json_decode($params);
+                            $style = $help->createTeam(
+                                $params->colore_sfondo,
+                                $params->colore_testo,
+                                $params->colore_bordo
+                            );
+                            ?>
+                            <tr>
+                                <td>
+                                    <div style="<?= $style ?>" class="fw-bold border rounded-pill p-3 fs-5">
+                                        <?= $help->getTeamNameByID($teamId) ?>
+                                    </div>
+                                </td>
+                                <td><?= $info['Vittorie'] ?></td>
+                                <td><?= implode(', ', $info['Anni']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+            break;
+
+        case 'all_time_table':
+            $tutte_le_partite = [];
+
+            foreach ($stagioni as $s) {
+                $partite = $db->getAll("partite", "*", "stagione_id = ?", [$s['codice_stagione']]);
+                $tutte_le_partite = array_merge($tutte_le_partite, $partite);
+            }
+            $location = $_POST['location'] ?? '';
+
+            if ($location == 'home') {
+                $ext = '_c';
+            } elseif ($location == 'away') {
+                $ext = '_t';
+            } else {
+                $ext = '';
+            }
+            $classifica = $help->getClassifica($tutte_le_partite, $ext);
+            ?>
+            <div class="mini-menu my-4">
+                <form action="" method="post" class="d-flex flex-column align-items-center gap-3">
+                    <!-- prima riga: i 6 bottoni location + round -->
+                    <div class="d-flex justify-content-center gap-5 flex-wrap">
+                        <button type="submit" class="btn btn-secondary" name="location" value="all">
+                            <?= $help->getTranslation('general', $langfile) ?>
+                        </button>
+                        <button type="submit" class="btn btn-secondary" name="location" value="home">
+                            <?= $help->getTranslation('home', $langfile) ?>
+                        </button>
+                        <button type="submit" class="btn btn-secondary" name="location" value="away">
+                            <?= $help->getTranslation('away', $langfile) ?>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="table-responsive mytable">
+                <table class="table table-hover table-striped align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th><?= $help->getTranslation('team', $langfile) ?></th>
+                            <th>Pt</th>
+                            <th>G</th>
+                            <th>V</th>
+                            <th>N</th>
+                            <th>P</th>
+                            <th>GF</th>
+                            <th>GS</th>
+                            <th>DR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $pos = 1;
+                        foreach ($classifica as $s) {
+                            $params = json_decode($help->getParamsbyID($s['squadra_id'], "squadre"));
+
+                            $badge = "dark";  // Badge per le squadre normali
+            
+                            $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
+                            echo "<tr>";
+                            echo "<td><strong>{$pos}</strong></td>";
+                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
+                            echo '<td><span class="badge bg-' . $badge . ' fs-6">'
+                                . htmlspecialchars($s['punti' . $ext])
+                                . '</span></td>';
+                            echo '<td>' . htmlspecialchars($s['giocate' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['vittorie' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['pareggi' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['sconfitte' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['gol_fatti' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['gol_subiti' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['diff_reti' . $ext]) . '</td>';
+                            echo "</tr>";
+                            $pos++;
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+            break;
+
+
         default:
-            $stagioni = $db
-                ->query("SELECT * FROM stagioni WHERE competizione_id = ? ORDER BY anno DESC", [$_GET['comp_id']])
-                ->fetchAll();
             ?>
             <h2><?= $help->getTranslation('seasons_list', $langfile) ?></h2>
             <div class="table-responsive text-center">
@@ -364,7 +490,7 @@ function generate($tab, $help, $langfile, $db)
 
     <div class="row mb-4">
         <?php foreach ($help->menu_competitions as $m): ?>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col">
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body text-center">
                         <a href="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>&tab=<?= $m ?>"

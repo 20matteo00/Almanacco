@@ -13,6 +13,8 @@ class Helper
         'seasons_list',
         'participating_teams',
         'direct_clashes',
+        'champions',
+        'all_time_table'
     ];
 
     public $menu_seasons = [
@@ -118,9 +120,9 @@ class Helper
     function createTeam(string $sfondo, string $testo, string $bordo): string
     {
         // Nota: htmlspecialchars non serve qui perché usiamo solo colori validi (#xxxxxx)
-        return "background-color: {$sfondo}; "
-            . "color: {$testo}; "
-            . "border: 3px solid {$bordo};";
+        return "background-color: {$sfondo} !important; "
+            . "color: {$testo} !important; "
+            . "border: 3px solid {$bordo} !important;";
     }
 
     function getClassifica($partite, $ext = '')
@@ -300,6 +302,35 @@ class Helper
         }
 
         return $result;
+    }
+
+    function getChampions(array $stagioni)
+    {
+        $winner = [];
+
+        foreach ($stagioni as $s) {
+            $params = json_decode($s['params']);
+            $vincitore = $params->Vincitore ?? null;
+
+            if ($vincitore) {
+                if (!isset($winner[$vincitore])) {
+                    $winner[$vincitore] = [
+                        'Vittorie' => 1,
+                        'Anni' => [$s['anno']."/".$s['anno']+1],
+                    ];
+                } else {
+                    $winner[$vincitore]['Vittorie']++;
+                    $winner[$vincitore]['Anni'][] = $s['anno']."/".$s['anno']+1;
+                }
+            }
+        }
+
+        // Ordina per numero di vittorie (descrescente)
+        uasort($winner, function ($a, $b) {
+            return $b['Vittorie'] <=> $a['Vittorie'];
+        });
+
+        return $winner;
     }
 
 

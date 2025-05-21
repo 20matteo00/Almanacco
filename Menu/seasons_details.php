@@ -22,7 +22,8 @@ function generate($tab, $help, $langfile, $db)
     $meta = floor($giornate / 2);         // 19
     if ($round === 'gone' || is_numeric($round)) {
         // Andata: giornate da 1 a $meta (1–19)
-        if(is_numeric($round)) $meta = $round;
+        if (is_numeric($round))
+            $meta = $round;
         $partite = $db->getAll(
             "partite",
             '*',
@@ -131,9 +132,10 @@ function generate($tab, $help, $langfile, $db)
                             } else {
                                 $badge = "dark";  // Badge per le squadre normali
                             }
+                            $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
                             echo "<tr>";
                             echo "<td><strong>{$pos}</strong></td>";
-                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='background-color: " . $params->colore_sfondo . "; color: " . $params->colore_testo . "; border: 1px solid " . $params->colore_bordo . ";'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
+                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
                             echo '<td><span class="badge bg-' . $badge . ' fs-6">'
                                 . htmlspecialchars($s['punti' . $ext])
                                 . '</span></td>';
@@ -177,8 +179,9 @@ function generate($tab, $help, $langfile, $db)
                             // Stampa i nomi delle squadre come intestazione
                             foreach ($squadrename as $key => $squadra) {
                                 $params = json_decode($help->getParamsbyID($key, "squadre"));
+                                $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
 
-                                echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='background-color: " . $params->colore_sfondo . "; color: " . $params->colore_testo . "; border: 1px solid " . $params->colore_bordo . ";'>" . substr($squadra, 0, 3) . "</div></td>";
+                                echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . substr($squadra, 0, 3) . "</div></td>";
                                 // Mostra i primi 3 caratteri del nome della squadra
                             }
                             ?>
@@ -187,8 +190,10 @@ function generate($tab, $help, $langfile, $db)
                         // Ora stampiamo i risultati per ogni squadra
                         foreach ($squadrename as $keyC => $squadra):
                             $params = json_decode($help->getParamsbyID($keyC, "squadre"));
+                            $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
+
                             echo "<tr>";
-                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='background-color: " . $params->colore_sfondo . "; color: " . $params->colore_testo . "; border: 1px solid " . $params->colore_bordo . ";'>" . $squadra . "</div></td>"; // Mostra il nome della squadra nella prima colonna
+                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='".$style."'>" . $squadra . "</div></td>"; // Mostra il nome della squadra nella prima colonna
             
                             // Per ogni avversaria nella colonna, cerchiamo il risultato della partita
                             foreach ($squadrename as $keyT => $avversaria):
@@ -309,18 +314,22 @@ function generate($tab, $help, $langfile, $db)
                                         // Parametri colori squadre
                                         $params1 = json_decode($help->getParamsbyID($m['squadra_casa_id'], "squadre"));
                                         $params2 = json_decode($help->getParamsbyID($m['squadra_trasferta_id'], "squadre"));
-
+                                        $style1 = $help->createTeam(
+                                            $params1->colore_sfondo,
+                                            $params1->colore_testo,
+                                            $params1->colore_bordo
+                                        );
+                                        $style2 = $help->createTeam(
+                                            $params2->colore_sfondo,
+                                            $params2->colore_testo,
+                                            $params2->colore_bordo
+                                        );
                                         // Badge “pill” squadre
-                                        $home = "<span class='rounded-pill fw-bold px-3 py-1 text-nowrap'
-                     style='background-color: {$params1->colore_sfondo};
-                            color: {$params1->colore_testo};
-                            border: 1px solid {$params1->colore_bordo};'>
+                                        $home = "<span class='rounded-pill fw-bold px-3 py-1 text-nowrap' style= '" . $style1 . "'>
                    " . htmlspecialchars($help->getTeamNameByID($m['squadra_casa_id'])) . "
                </span>";
                                         $away = "<span class='rounded-pill fw-bold px-3 py-1 text-nowrap'
-                     style='background-color: {$params2->colore_sfondo};
-                            color: {$params2->colore_testo};
-                            border: 1px solid {$params2->colore_bordo};'>
+                     style= '" . $style2 . "'>
                    " . htmlspecialchars($help->getTeamNameByID($m['squadra_trasferta_id'])) . "
                </span>";
 
