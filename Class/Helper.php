@@ -51,7 +51,7 @@ class Helper
         return isset($langfile[$key]) ? $langfile[$key] : $key;
     }
 
-    function getTeamsPartecipant($id)
+    public function getTeamsPartecipant($id)
     {
         // Prendo tutte le stagioni di questa competizione
         $teams = $this->db->getAll("stagioni", '*', "competizione_id = ?", [$_GET['comp_id']]);
@@ -91,7 +91,7 @@ class Helper
         return $rows;
     }
 
-    function getTeamsNamebyCompetition(array $teamsData): array
+    public function getTeamsNamebyCompetition(array $teamsData): array
     {
         $names = [];
         foreach ($teamsData as $team) {
@@ -105,19 +105,19 @@ class Helper
         return $names;
     }
 
-    function getTeamNameByID($id)
+    public function getTeamNameByID($id)
     {
         $row = $this->db->getOne("squadre", "id = ?", [$id]);
         return $row ? $row['nome'] : null;
     }
 
-    function getParamsbyID($id, $table, $cod = "id")
+    public function getParamsbyID($id, $table, $cod = "id")
     {
         $r = $this->db->getOne("{$table}", "{$cod} = ?", [$id]);
         return $r['params'];
     }
 
-    function createTeam(string $sfondo, string $testo, string $bordo): string
+    public function createTeam(string $sfondo, string $testo, string $bordo): string
     {
         // Nota: htmlspecialchars non serve qui perché usiamo solo colori validi (#xxxxxx)
         return "background-color: {$sfondo} !important; "
@@ -125,7 +125,15 @@ class Helper
             . "border: 3px solid {$bordo} !important;";
     }
 
-    function getClassifica($partite, $ext = '')
+    /**
+     * Per ogni metrica (vittorie, pareggi, …) e ambito ('', '_c', '_t'),
+     * calcola valore min e max e quali squadre li hanno ottenuti.
+     *
+     * @param array $partite Array di squadre da getClassifica()
+     * @param string $ext Stringa per capire casa/trasferta
+     * @return array 
+     */
+    public function getClassifica($partite, $ext = '')
     {
         $classifica = [];
 
@@ -226,7 +234,7 @@ class Helper
         }
 
         $sortFields = ['punti', 'diff_reti', 'gol_fatti'];
-        usort($classifica, function ($a, $b) use ($ext, $sortFields) {
+        usort($classifica,  function ($a, $b) use ($ext, $sortFields) {
             foreach ($sortFields as $field) {
                 $key = $field . $ext;
                 if ($a[$key] !== $b[$key]) {
@@ -247,7 +255,7 @@ class Helper
      * @param array $classifica Array di squadre da getClassifica()
      * @return array 
      */
-    function getStatistics(array $classifica): array
+    public function getStatistics(array $classifica): array
     {
         $result = ['min' => [], 'max' => []];
         if (empty($classifica)) return $result;
@@ -306,13 +314,13 @@ class Helper
         return $result;
     }
 
-    function getChampions(array $stagioni)
+    public function getChampions(array $stagioni)
     {
         $winner = [];
 
         foreach ($stagioni as $s) {
             $params = json_decode($s['params']);
-            $vincitore = $params->Vincitore ?? null;
+            $vincitore = $params->vincitore ?? null;
 
             if ($vincitore) {
                 if (!isset($winner[$vincitore])) {

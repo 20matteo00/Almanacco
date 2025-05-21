@@ -14,7 +14,7 @@ $squadre = $db->getAll("squadre");
                 $params->colore_bordo
             );
             $name = htmlspecialchars($s['nome']);
-            $url = '?page=teams_details&id=' . intval($s['id']);
+            $url = '?page=teams_details&team_id=' . intval($s['id']);
             ?>
             <div class="col d-flex justify-content-center">
                 <div class="team-wrapper w-100 text-center">

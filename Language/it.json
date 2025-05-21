@@ -1,7 +1,6 @@
 {
     "site_name": "Almanacco",
     "site_description": "Almanacco Sportivo aggiornato con tutte le statistiche e i risultati delle partite",
-
     "contact": "Contatti",
     "phone": "Telefono",
     "email": "Email",
@@ -9,18 +8,18 @@
     "links": "Link utili",
     "social": "Social",
     "search": "Cerca",
-
     "competitions": "Competizioni",
     "competition": "Competizione",
     "seasons": "Stagioni",
     "season": "Stagione",
     "teams": "Squadre",
     "team": "Squadra",
-
     "level": "Livello",
     "state": "Stato",
     "city": "Città",
+    "citta": "Città",
     "stadium": "Stadio",
+    "stadio": "Stadio",
     "year": "Anno",
     "years": "Anni",
     "day": "Giornata",
@@ -74,11 +73,11 @@
     "details": "Dettagli",
     "view": "Visualizza",
     "go": "Vai",
+    "info": "Info",
     "min": "Minimo",
     "max": "Massimo",
     "no_match": "Nessuna Partita Trovata",
     "no_teams": "Nessuna Squadra Trovata",
-
     "seasons_list": "Elenco delle stagioni",
     "participating_teams": "Squadre partecipanti",
     "direct_clashes": "Scontri diretti",

@@ -1,10 +1,10 @@
 <?php
 // --------------------------------------------------
-// COMPETITIONS PAGE
+// SEASONS PAGE
 // --------------------------------------------------
 
 if (!isset($_GET['season_id'])) {
-    header("Location: ?page=competitions");
+    header("Location: ?page=seasons");
     exit;
 }
 
@@ -18,7 +18,7 @@ function generate($tab, $help, $langfile, $db)
     $season_params = json_decode($help->getParamsbyID($_GET['season_id'], "stagioni", "codice_stagione"));
     $location = $_POST['location'] ?? '';
     $round = $_POST['round'] ?? '';
-    $giornate = $season_params->Giornate;      // 38
+    $giornate = $season_params->giornate;      // 38
     $meta = floor($giornate / 2);         // 19
     if ($round === 'gone' || is_numeric($round)) {
         // Andata: giornate da 1 a $meta (1–19)
@@ -118,8 +118,8 @@ function generate($tab, $help, $langfile, $db)
                     <tbody>
                         <?php
                         $pos = 1;
-                        $promo = $season_params->Promozione;
-                        $retro = $season_params->Retrocessione;
+                        $promo = $season_params->promozione;
+                        $retro = $season_params->retrocessione;
                         $totsquadre = count($classifica);
                         $postoretro = $totsquadre - $retro;
                         foreach ($classifica as $s) {

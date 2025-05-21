@@ -57,7 +57,14 @@ if (isset($_SESSION['logged']) && $_SESSION['logged']) {
                 'anno' => $_POST['anno'],
                 'squadre' => json_encode($_POST['squadre']),
                 'codice_stagione' => $_POST['competizione_id'] . '_' . $_POST['anno'],
-                'params' => json_encode([])
+                'params' => json_encode([
+                    'promozione' => $_POST['promozione'] ?? 1,
+                    'retrocessione' => $_POST['retrocessione'] ?? 3,
+                    'playoff' => $_POST['playoff'] ?? 0,
+                    'playout' => $_POST['playout'] ?? 0,
+                    'giornate' => $_POST['giornate'] ?? 38,
+                    'vincitore' => $_POST['vincitore'] ?? 0
+                ])
             ]);
         }
         if (isset($_POST['add_partita'])) {
@@ -133,7 +140,14 @@ if (isset($_POST['update_comp']) || isset($_POST['update_squadra']) || isset($_P
             'anno' => $_POST['anno'],
             'squadre' => json_encode($_POST['squadre']),
             'codice_stagione' => $_POST['competizione_id'] . '_' . $_POST['anno'],
-            'params' => json_encode([])
+            'params' => json_encode([
+                'promozione' => $_POST['promozione'] ?? 1,
+                'retrocessione' => $_POST['retrocessione'] ?? 3,
+                'playoff' => $_POST['playoff'] ?? 0,
+                'playout' => $_POST['playout'] ?? 0,
+                'giornate' => $_POST['giornate'] ?? 38,
+                'vincitore' => $_POST['vincitore'] ?? 0
+            ])
         ], 'codice_stagione = ?', [$_POST['codice_stagione']]);
     }
     if (isset($_POST['update_partita'])) {
@@ -375,7 +389,7 @@ $partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
                                     </select>
                                 </div>
                                 <div class="col-auto mb-3">
-                                    <label class="form-label">Competizione</label>
+                                    <label class="form-label">Squadre</label>
                                     <select name="squadre[]" class="form-control" size="4" multiple required>
                                         <option value="" disabled>Seleziona Squadre</option>
                                         <?php foreach ($squadre as $s): ?>
@@ -388,6 +402,37 @@ $partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
                                 <div class="col-auto mb-3">
                                     <label class="form-label">Anno Inizio</label>
                                     <input type="number" name="anno" class="form-control" min="1850" max="2150" required>
+                                </div>
+                                <div class="col-auto mb-3">
+                                    <label class="form-label">Promozione</label>
+                                    <input type="number" name="promozione" class="form-control" min="0">
+                                </div>
+                                <div class="col-auto mb-3">
+                                    <label class="form-label">Retrocessione</label>
+                                    <input type="number" name="retrocessione" class="form-control" min="0">
+                                </div>
+                                <div class="col-auto mb-3">
+                                    <label class="form-label">Playoff</label>
+                                    <input type="number" name="playoff" class="form-control" min="0">
+                                </div>
+                                <div class="col-auto mb-3">
+                                    <label class="form-label">Playout</label>
+                                    <input type="number" name="playout" class="form-control" min="0">
+                                </div>
+                                <div class="col-auto mb-3">
+                                    <label class="form-label">Giornate</label>
+                                    <input type="number" name="giornate" class="form-control" min="0">
+                                </div>
+                                <div class="col-auto mb-3">
+                                    <label class="form-label">Vincitore</label>
+                                    <select name="vincitore" class="form-control" size="4">
+                                        <option value="" disabled>Seleziona Squadra</option>
+                                        <?php foreach ($squadre as $s): ?>
+                                            <option value="<?= htmlspecialchars($s['id']) ?>">
+                                                <?= htmlspecialchars($s['nome']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                                 <div class="col-auto mb-3 d-flex align-items-end">
                                     <button type="submit" name="save_stagione" class="btn btn-success">Salva</button>
@@ -714,6 +759,7 @@ $partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
             // carico stagione
             $st = $db->getOne('stagioni', 'codice_stagione = ?', [$_POST['stagione_id']]);
             $sel = json_decode($st['squadre'], true);
+            $params = json_decode($st['params'], true);
             $partite_in_stagione = $db->getone('partite', 'stagione_id = ?', [$_POST['stagione_id']]);
             if ($partite_in_stagione) {
                 header('Location: ?page=riservato');
@@ -751,6 +797,37 @@ $partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
                                 <label class="form-label">Anno</label>
                                 <input type="number" name="anno" class="form-control"
                                     value="<?= htmlspecialchars($st['anno']) ?>" min="1850" max="2150" required>
+                            </div>
+                            <div class="col-auto mb-3">
+                                <label class="form-label">Promozione</label>
+                                <input type="number" name="promozione" class="form-control" value="<?= htmlspecialchars($params['promozione'] ?? '') ?>" min="0">
+                            </div>
+                            <div class="col-auto mb-3">
+                                <label class="form-label">Retrocessione</label>
+                                <input type="number" name="retrocessione" class="form-control" value="<?= htmlspecialchars($params['retrocessione'] ?? '') ?>" min="0">
+                            </div>
+                            <div class="col-auto mb-3">
+                                <label class="form-label">Playoff</label>
+                                <input type="number" name="playoff" class="form-control" value="<?= htmlspecialchars($params['playoff'] ?? '') ?>" min="0">
+                            </div>
+                            <div class="col-auto mb-3">
+                                <label class="form-label">Playout</label>
+                                <input type="number" name="playout" class="form-control" value="<?= htmlspecialchars($params['playout'] ?? '') ?>" min="0">
+                            </div>
+                            <div class="col-auto mb-3">
+                                <label class="form-label">Giornate</label>
+                                <input type="number" name="giornate" class="form-control" value="<?= htmlspecialchars($params['giornate'] ?? '') ?>" min="0">
+                            </div>
+                            <div class="col-auto mb-3">
+                                <label class="form-label">Vincitore</label>
+                                <select name="vincitore" class="form-control" size="4">
+                                    <option value="" disabled>Seleziona Squadra</option>
+                                    <?php foreach ($sel as $s): ?>
+                                        <option value="<?= htmlspecialchars($s) ?>" <?= ($params['vincitore'] == $s) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($help->getTeamNameByID($s)) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div class="col-auto mb-3 d-flex align-items-end">
                                 <button type="submit" name="update_stagione" class="btn btn-warning me-2">Aggiorna</button>
