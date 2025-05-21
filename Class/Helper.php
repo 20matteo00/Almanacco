@@ -114,7 +114,7 @@ class Helper
         return $r['params'];
     }
 
-    function getClassifica($partite)
+    function getClassifica($partite, $ext = '')
     {
         $classifica = [];
 
@@ -214,14 +214,17 @@ class Helper
 
         }
 
-        // Ordinamento classifica
-        usort($classifica, function ($a, $b) {
-            if ($a['punti'] != $b['punti'])
-                return $b['punti'] - $a['punti'];
-            if ($a['diff_reti'] != $b['diff_reti'])
-                return $b['diff_reti'] - $a['diff_reti'];
-            return $b['gol_fatti'] - $a['gol_fatti'];
+        $sortFields = ['punti', 'diff_reti', 'gol_fatti'];
+        usort($classifica, function ($a, $b) use ($ext, $sortFields) {
+            foreach ($sortFields as $field) {
+                $key = $field . $ext;
+                if ($a[$key] !== $b[$key]) {
+                    return $b[$key] <=> $a[$key];
+                }
+            }
+            return 0;
         });
+
 
         return $classifica;
     }
@@ -231,18 +234,7 @@ class Helper
      * calcola valore min e max e quali squadre li hanno ottenuti.
      *
      * @param array $classifica Array di squadre da getClassifica()
-     * @return array [
-     *   'min' => [
-     *     'vittorie'   => ['value'=>int, 'teams'=>[...]],
-     *     'vittorie_c' => ['value'=>int, 'teams'=>[...]],
-     *     …,
-     *   ],
-     *   'max' => [
-     *     'vittorie'   => ['value'=>int, 'teams'=>[...]],
-     *     'vittorie_c' => ['value'=>int, 'teams'=>[...]],
-     *     …,
-     *   ],
-     * ]
+     * @return array 
      */
     function getStatistics(array $classifica): array
     {
@@ -273,7 +265,7 @@ class Helper
 
         // Scorri tutte le squadre
         foreach ($classifica as $teamData) {
-            $teamId = $teamData['squadra_id'];
+            $teamId = $this->getTeamNameByID($teamData['squadra_id']);
             foreach ($scopes as $suffix) {
                 foreach ($metrics as $metric) {
                     $key = $metric . $suffix;

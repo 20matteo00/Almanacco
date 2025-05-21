@@ -15,14 +15,93 @@ $activeTab = $_GET['tab'] ?? 'matches';
 // Funzione di rendering
 function generate($tab, $help, $langfile, $db)
 {
-    $partite = $db->getAll("partite", '*', 'stagione_id = ?', [$_GET['season_id']], 'giornata ASC, data_partita ASC');
-    $classifica = $help->getClassifica($partite);
+    $season_params = json_decode($help->getParamsbyID($_GET['season_id'], "stagioni", "codice_stagione"));
+    $location = $_POST['location'] ?? '';
+    $round = $_POST['round'] ?? '';
+    $giornate = $season_params->Giornate;      // 38
+    $meta = floor($giornate / 2);         // 19
+    if ($round === 'gone' || is_numeric($round)) {
+        // Andata: giornate da 1 a $meta (1–19)
+        if(is_numeric($round)) $meta = $round;
+        $partite = $db->getAll(
+            "partite",
+            '*',
+            'stagione_id = ? AND giornata BETWEEN ? AND ?',
+            [$_GET['season_id'], 1, $meta],
+            'giornata ASC, data_partita ASC'
+        );
+    } elseif ($round === 'return') {
+        // Ritorno: giornate da $meta+1 a $giornate (20–38)
+        $partite = $db->getAll(
+            "partite",
+            '*',
+            'stagione_id = ? AND giornata BETWEEN ? AND ?',
+            [$_GET['season_id'], $meta + 1, $giornate],
+            'giornata ASC, data_partita ASC'
+        );
+    } else {
+        // Tutte le giornate
+        $partite = $db->getAll(
+            "partite",
+            '*',
+            'stagione_id = ?',
+            [$_GET['season_id']],
+            'giornata ASC, data_partita ASC'
+        );
+    }
+    if ($location == 'home') {
+        $ext = '_c';
+    } elseif ($location == 'away') {
+        $ext = '_t';
+    } else {
+        $ext = '';
+    }
+    $classifica = $help->getClassifica($partite, $ext);
     switch ($tab) {
         case 'table':
+
             ?>
+            <div class="mini-menu my-4">
+                <form action="" method="post" class="d-flex flex-column align-items-center gap-3">
+                    <!-- prima riga: i 6 bottoni location + round -->
+                    <div class="d-flex justify-content-center gap-5 flex-wrap">
+                        <button type="submit" class="btn btn-secondary" name="location" value="all">
+                            <?= $help->getTranslation('general', $langfile) ?>
+                        </button>
+                        <button type="submit" class="btn btn-secondary" name="location" value="home">
+                            <?= $help->getTranslation('home', $langfile) ?>
+                        </button>
+                        <button type="submit" class="btn btn-secondary" name="location" value="away">
+                            <?= $help->getTranslation('away', $langfile) ?>
+                        </button>
+                        <button type="submit" class="btn btn-secondary" name="round" value="gone">
+                            <?= $help->getTranslation('andata', $langfile) ?>
+                        </button>
+                        <button type="submit" class="btn btn-secondary" name="round" value="return">
+                            <?= $help->getTranslation('ritorno', $langfile) ?>
+                        </button>
+                        <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#giornateCollapse"
+                            aria-expanded="false" aria-controls="giornateCollapse">
+                            <?= $help->getTranslation('day', $langfile) ?>
+                        </button>
+                    </div>
+
+                    <!-- seconda riga: il gruppo di giornate, collassabile -->
+                    <div class="collapse w-100" id="giornateCollapse">
+                        <div class="d-flex justify-content-center flex-wrap gap-2 mt-2">
+                            <?php for ($i = 1; $i <= $giornate; $i++): ?>
+                                <button type="submit" class="btn btn-secondary btn-sm" name="round" value="<?= $i ?>">
+                                    <?= $i ?>
+                                </button>
+                            <?php endfor; ?>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
             <div class="table-responsive mytable">
                 <table class="table table-hover table-striped align-middle text-center">
-                    <thead class="table-dark sticky-top">
+                    <thead class="table-dark">
                         <tr>
                             <th>#</th>
                             <th><?= $help->getTranslation('team', $langfile) ?></th>
@@ -39,7 +118,6 @@ function generate($tab, $help, $langfile, $db)
                     <tbody>
                         <?php
                         $pos = 1;
-                        $season_params = json_decode($help->getParamsbyID($_GET['season_id'], "stagioni", "codice_stagione"));
                         $promo = $season_params->Promozione;
                         $retro = $season_params->Retrocessione;
                         $totsquadre = count($classifica);
@@ -57,14 +135,16 @@ function generate($tab, $help, $langfile, $db)
                             echo "<tr>";
                             echo "<td><strong>{$pos}</strong></td>";
                             echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='background-color: " . $params->colore_sfondo . "; color: " . $params->colore_testo . "; border: 1px solid " . $params->colore_bordo . ";'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
-                            echo "<td><span class='badge bg-{$badge} fs-6'>{$s['punti']}</span></td>";
-                            echo "<td>{$s['giocate']}</td>";
-                            echo "<td>{$s['vittorie']}</td>";
-                            echo "<td>{$s['pareggi']}</td>";
-                            echo "<td>{$s['sconfitte']}</td>";
-                            echo "<td>{$s['gol_fatti']}</td>";
-                            echo "<td>{$s['gol_subiti']}</td>";
-                            echo "<td>{$s['diff_reti']}</td>";
+                            echo '<td><span class="badge bg-' . $badge . ' fs-6">'
+                                . htmlspecialchars($s['punti' . $ext])
+                                . '</span></td>';
+                            echo '<td>' . htmlspecialchars($s['giocate' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['vittorie' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['pareggi' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['sconfitte' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['gol_fatti' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['gol_subiti' . $ext]) . '</td>';
+                            echo '<td>' . htmlspecialchars($s['diff_reti' . $ext]) . '</td>';
                             echo "</tr>";
                             $pos++;
                         }
@@ -151,11 +231,11 @@ function generate($tab, $help, $langfile, $db)
             ?>
             <div class="table-responsive">
                 <table class="table table-hover table-striped align-middle text-center">
-                    <thead>
+                    <thead class="table-dark">
                         <tr>
-                            <th scope="col">Statistica</th>
-                            <th scope="col">Minimo (Valore & Squadre)</th>
-                            <th scope="col">Massimo (Valore & Squadre)</th>
+                            <th scope="col"></th>
+                            <th scope="col"><?= htmlspecialchars($help->getTranslation("max", $langfile)) ?></th>
+                            <th scope="col"><?= htmlspecialchars($help->getTranslation("min", $langfile)) ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -167,13 +247,20 @@ function generate($tab, $help, $langfile, $db)
                             <tr>
                                 <th scope="row"><?= htmlspecialchars($help->getTranslation($key, $langfile)) ?></th>
                                 <td>
-                                    <strong><?= htmlspecialchars($minData['value']) ?></strong><br>
-                                    <small><?= htmlspecialchars($minTeams) ?></small>
+                                    <span>
+                                        <strong>
+                                            <?= htmlspecialchars($maxTeams) ?>
+                                        </strong> (<?= htmlspecialchars($maxData['value']) ?>)
+                                    </span>
                                 </td>
                                 <td>
-                                    <strong><?= htmlspecialchars($maxData['value']) ?></strong><br>
-                                    <small><?= htmlspecialchars($maxTeams) ?></small>
+                                    <span>
+                                        <strong>
+                                            <?= htmlspecialchars($minTeams) ?>
+                                        </strong> (<?= htmlspecialchars($minData['value']) ?>)
+                                    </span>
                                 </td>
+
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -205,7 +292,7 @@ function generate($tab, $help, $langfile, $db)
                         <div class="col mb-4">
                             <h2 class="text-center fw-bold"><?= $help->getTranslation('day', $langfile) . " " . $giornata ?></h2>
                             <table class="table table-striped table-hover matchtable">
-                                <thead>
+                                <thead class="table-dark">
                                     <tr class="text-center">
                                         <th scope="col">Data</th>
                                         <th scope="col">Squadra Casa</th>
