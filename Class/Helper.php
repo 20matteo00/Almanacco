@@ -249,6 +249,8 @@ class Helper
      */
     function getStatistics(array $classifica): array
     {
+        $result = ['min' => [], 'max' => []];
+        if (empty($classifica)) return $result;
         $metrics = [
             'vittorie',
             'pareggi',
@@ -263,7 +265,7 @@ class Helper
             '_t' => '_t',  // trasferta
         ];
 
-        $result = ['min' => [], 'max' => []];
+        
 
         // Inizializza con valori estremi e squadre vuote
         foreach ($scopes as $suffix) {
