@@ -132,6 +132,16 @@ class Helper
             . "border: 3px solid {$bordo} !important;";
     }
 
+    public function getCountEdition($id, $comp){
+        $stagioni = $this->db->getAll("stagioni", "squadre", "competizione_id = ?", [$comp]);
+        $num = 0;
+        foreach ($stagioni as $s){
+            $squadre = json_decode($s['squadre'], true);
+            if (in_array($id, $squadre)) $num++;
+        }
+        return $num;
+    }
+
     /**
      * Per ogni metrica (vittorie, pareggi, …) e ambito ('', '_c', '_t'),
      * calcola valore min e max e quali squadre li hanno ottenuti.

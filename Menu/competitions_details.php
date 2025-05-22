@@ -398,6 +398,7 @@ function generate($tab, $help, $langfile, $db)
                         <tr>
                             <th>#</th>
                             <th><?= $help->getTranslation('team', $langfile) ?></th>
+                            <th><?= $help->getTranslation('edition', $langfile) ?></th>
                             <th>Pt</th>
                             <th>G</th>
                             <th>V</th>
@@ -411,15 +412,17 @@ function generate($tab, $help, $langfile, $db)
                     <tbody>
                         <?php
                         $pos = 1;
+                        
                         foreach ($classifica as $s) {
                             $params = json_decode($help->getParamsbyID($s['squadra_id'], "squadre"));
-
+                            $edition = $help->getCountEdition($s['squadra_id'], $_GET['comp_id']);
                             $badge = "dark";  // Badge per le squadre normali
             
                             $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
                             echo "<tr>";
                             echo "<td><strong>{$pos}</strong></td>";
                             echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
+                            echo "<td><strong>{$edition}</strong></td>";
                             echo '<td><span class="badge bg-' . $badge . ' fs-6">'
                                 . htmlspecialchars($s['punti' . $ext])
                                 . '</span></td>';
