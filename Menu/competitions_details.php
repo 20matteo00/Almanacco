@@ -60,7 +60,7 @@ function generate($tab, $help, $langfile, $db)
                                         ?>
                                 </td>
                                 <td>
-                                    <a href="?page=teams_details&id=<?= urlencode($row['id']) ?>" class="btn btn-primary btn-sm">
+                                    <a href="?page=teams_details&team_id=<?= urlencode($row['id']) ?>" class="btn btn-primary btn-sm">
                                         <?= $help->getTranslation('view', $langfile) ?>
                                     </a>
                                 </td>

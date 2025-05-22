@@ -51,6 +51,13 @@ class Helper
         return isset($langfile[$key]) ? $langfile[$key] : $key;
     }
 
+    public function getCompetitionbyCode($code)
+    {
+        $comp = explode("_", $code)[0];
+        $c = $this->db->getOne("competizioni", "id = ?", [$comp]);
+        return $c['nome'];
+    }
+
     public function getTeamsPartecipant($id)
     {
         // Prendo tutte le stagioni di questa competizione
@@ -234,7 +241,7 @@ class Helper
         }
 
         $sortFields = ['punti', 'diff_reti', 'gol_fatti'];
-        usort($classifica,  function ($a, $b) use ($ext, $sortFields) {
+        usort($classifica, function ($a, $b) use ($ext, $sortFields) {
             foreach ($sortFields as $field) {
                 $key = $field . $ext;
                 if ($a[$key] !== $b[$key]) {
@@ -258,7 +265,8 @@ class Helper
     public function getStatistics(array $classifica): array
     {
         $result = ['min' => [], 'max' => []];
-        if (empty($classifica)) return $result;
+        if (empty($classifica))
+            return $result;
         $metrics = [
             'vittorie',
             'pareggi',
@@ -273,7 +281,7 @@ class Helper
             '_t' => '_t',  // trasferta
         ];
 
-        
+
 
         // Inizializza con valori estremi e squadre vuote
         foreach ($scopes as $suffix) {
@@ -326,11 +334,11 @@ class Helper
                 if (!isset($winner[$vincitore])) {
                     $winner[$vincitore] = [
                         'Vittorie' => 1,
-                        'Anni' => [$s['anno']."/".$s['anno']+1],
+                        'Anni' => [$s['anno'] . "/" . $s['anno'] + 1],
                     ];
                 } else {
                     $winner[$vincitore]['Vittorie']++;
-                    $winner[$vincitore]['Anni'][] = $s['anno']."/".$s['anno']+1;
+                    $winner[$vincitore]['Anni'][] = $s['anno'] . "/" . $s['anno'] + 1;
                 }
             }
         }
