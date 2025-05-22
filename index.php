@@ -20,7 +20,7 @@ $lang = isset($_GET['lang']) ? $_GET['lang'] : 'it';
 $langfile = $help->loadLanguage($lang);
 
 /* Page */
-$page = isset($_GET['page']) ? $_GET['page'] : 'competitions';
+$page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 /* var_dump($_SESSION); */
 
