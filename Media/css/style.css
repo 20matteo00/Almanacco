@@ -2,6 +2,11 @@ a {
     text-decoration: none;
 }
 
+.navbar-img{
+    width: 30px;
+    height: auto;
+}
+
 .my-max-table {
     max-height: 250px;
 }

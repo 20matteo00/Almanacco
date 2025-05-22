@@ -10,6 +10,9 @@
 
 <meta name="robots" content="index, follow">
 
+<!-- ICONA -->
+<link rel="icon" href="Media/images/logo.ico" sizes="32x32">
+
 <!-- STYLE -->
 <link rel="stylesheet" href="Media/css/bootstrap.css">
 <link rel="stylesheet" href="Media/css/icone/font/bootstrap-icons.css">
