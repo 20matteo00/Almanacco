@@ -9,9 +9,9 @@ $squadre = $db->getAll("squadre");
         <?php foreach ($squadre as $s):
             $params = json_decode($s['params']);
             $style = $help->createTeam(
-                $params->colore_sfondo,
-                $params->colore_testo,
-                $params->colore_bordo
+                $params->colore_sfondo ?? "#000000",
+                $params->colore_testo ?? "#ffffff",
+                $params->colore_bordo ?? "#000000"
             );
             $name = htmlspecialchars($s['nome']);
             $url = '?page=teams_details&team_id=' . intval($s['id']);

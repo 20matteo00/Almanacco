@@ -507,6 +507,7 @@ $partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
             <div class="col-lg-6">
                 <div class="card shadow-sm">
                     <div class="card-header">Aggiungi Partita</div>
+                    <?php $squadre = [] ?>
                     <div class="card-body">
                         <form method="post">
                             <div class="row">
@@ -526,10 +527,11 @@ $partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
                                             // Estraggo il nome (o metto stringa vuota se nulla)
                                             $nomecompetizione = $comp ? $comp['nome'] : '';
                                             // Decodifico le squadre
-                                            $squadre = json_decode($st['squadre'], true);
+                                            $s = json_decode($st['squadre'], true);
                                             $squadrenomi = [];
-                                            foreach ($squadre as $squadra_id) {
+                                            foreach ($s as $squadra_id) {
                                                 $squadra = $db->getOne('squadre', 'id = ?', [$squadra_id]);
+                                                $squadre[] = $squadra_id;
                                                 if ($squadra) {
                                                     $squadrenomi[] = $squadra['nome'];
                                                 }
@@ -542,6 +544,7 @@ $partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                                <?php $squadre = array_unique($squadre) ?>
                                 <div class="col-auto mb-3">
                                     <label class="form-label">Squadra Casa</label>
                                     <select name="squadra1_id" id="squadra1_id" class="form-control" required>

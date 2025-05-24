@@ -124,7 +124,7 @@ class Helper
         return $r['params'];
     }
 
-    public function createTeam(string $sfondo, string $testo, string $bordo): string
+    public function createTeam(string $sfondo = "#000000", string $testo ="#ffffff", string $bordo ="#000000"): string
     {
         // Nota: htmlspecialchars non serve qui perché usiamo solo colori validi (#xxxxxx)
         return "background-color: {$sfondo} !important; "
@@ -157,6 +157,7 @@ class Helper
         $classifica = [];
 
         foreach ($partite as $p) {
+            if ($p['giornata']>=100)continue;
             $casa = $p['squadra_casa_id'];
             $trasferta = $p['squadra_trasferta_id'];
             $golCasa = $p['gol_casa'];
@@ -371,6 +372,7 @@ class Helper
         foreach ($partite as $partita) {
             $giornata = $partita['giornata'];
             $partiteFinoAdOra[] = $partita;
+            if ($giornata>=100)continue;
 
             // calcola classifica solo alla fine di ogni giornata
             // supponiamo che le partite siano ordinate per giornata
