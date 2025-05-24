@@ -134,7 +134,7 @@ class Helper
         return $r['params'];
     }
 
-    public function createTeam(string $sfondo = "#000000", string $testo ="#ffffff", string $bordo ="#000000"): string
+    public function createTeam(string $sfondo = "#000000", string $testo = "#ffffff", string $bordo = "#000000"): string
     {
         // Nota: htmlspecialchars non serve qui perché usiamo solo colori validi (#xxxxxx)
         return "background-color: {$sfondo} !important; "
@@ -167,7 +167,10 @@ class Helper
         $classifica = [];
 
         foreach ($partite as $p) {
-            if ($p['giornata']>=100)continue;
+            $season_params = json_decode($this->getParamsbyID($p['stagione_id'], "stagioni", "codice_stagione"), true);
+            $penalita = $season_params['penalita'] ?? [];
+            if ($p['giornata'] >= 100)
+                continue;
             $casa = $p['squadra_casa_id'];
             $trasferta = $p['squadra_trasferta_id'];
             $golCasa = $p['gol_casa'];
@@ -178,6 +181,7 @@ class Helper
                 if (!isset($classifica[$squadra])) {
                     $classifica[$squadra] = [
                         'squadra_id' => $squadra,
+                        'penalita' => $penalita[$squadra] ?? 0,
                         'giocate' => 0,
                         'vittorie' => 0,
                         'pareggi' => 0,
@@ -240,9 +244,12 @@ class Helper
                 $classifica[$trasferta]['punti_t'] += 1;
             }
 
+            $penaC = $penalita[$casa] ?? 0;
+            $penaT = $penalita[$trasferta] ?? 0;
+
             // Calcolo totale per ciascuna squadra (casa + trasferta)
             $classifica[$casa]['giocate'] = $classifica[$casa]['giocate_c'] + $classifica[$casa]['giocate_t'];
-            $classifica[$casa]['punti'] = $classifica[$casa]['punti_c'] + $classifica[$casa]['punti_t'];
+            $classifica[$casa]['punti'] = -$penaC + $classifica[$casa]['punti_c'] + $classifica[$casa]['punti_t'];
             $classifica[$casa]['vittorie'] = $classifica[$casa]['vittorie_c'] + $classifica[$casa]['vittorie_t'];
             $classifica[$casa]['pareggi'] = $classifica[$casa]['pareggi_c'] + $classifica[$casa]['pareggi_t'];
             $classifica[$casa]['sconfitte'] = $classifica[$casa]['sconfitte_c'] + $classifica[$casa]['sconfitte_t'];
@@ -252,7 +259,7 @@ class Helper
 
             // Totale della squadra in trasferta
             $classifica[$trasferta]['giocate'] = $classifica[$trasferta]['giocate_c'] + $classifica[$trasferta]['giocate_t'];
-            $classifica[$trasferta]['punti'] = $classifica[$trasferta]['punti_c'] + $classifica[$trasferta]['punti_t'];
+            $classifica[$trasferta]['punti'] = -$penaT + $classifica[$trasferta]['punti_c'] + $classifica[$trasferta]['punti_t'];
             $classifica[$trasferta]['vittorie'] = $classifica[$trasferta]['vittorie_c'] + $classifica[$trasferta]['vittorie_t'];
             $classifica[$trasferta]['pareggi'] = $classifica[$trasferta]['pareggi_c'] + $classifica[$trasferta]['pareggi_t'];
             $classifica[$trasferta]['sconfitte'] = $classifica[$trasferta]['sconfitte_c'] + $classifica[$trasferta]['sconfitte_t'];
@@ -382,7 +389,8 @@ class Helper
         foreach ($partite as $partita) {
             $giornata = $partita['giornata'];
             $partiteFinoAdOra[] = $partita;
-            if ($giornata>=100)continue;
+            if ($giornata >= 100)
+                continue;
 
             // calcola classifica solo alla fine di ogni giornata
             // supponiamo che le partite siano ordinate per giornata

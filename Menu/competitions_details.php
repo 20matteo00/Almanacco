@@ -361,9 +361,9 @@ function generate($tab, $help, $langfile, $db)
                             $params = $help->getParamsbyID($teamId, "squadre");
                             $params = json_decode($params);
                             $style = $help->createTeam(
-                                $params->colore_sfondo,
-                                $params->colore_testo,
-                                $params->colore_bordo
+                                $params->colore_sfondo ?? '#000000',
+                                $params->colore_testo ?? '#ffffff',
+                                $params->colore_bordo ?? '#000000'
                             );
                             ?>
                             <tr>
@@ -428,7 +428,7 @@ function generate($tab, $help, $langfile, $db)
                             $edition = $help->getCountEdition($s['squadra_id'], $_GET['comp_id']);
                             $badge = "dark";  // Badge per le squadre normali
             
-                            $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
+                            $style = $help->createTeam($params->colore_sfondo ?? '#000000', $params->colore_testo ?? '#ffffff', $params->colore_bordo ?? '#000000');
                             echo "<tr>";
                             echo "<td><strong>{$pos}</strong></td>";
                             echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";

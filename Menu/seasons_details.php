@@ -269,10 +269,23 @@ function generate($tab, $help, $langfile, $db)
                                 } else {
                                     $badge = "danger";  // Badge per le squadre normali
                                 }
+                                $ast = $tooltip = "";
+                                if ($s['penalita'] != 0) {
+                                    $realpoint = $s['punti'] + $s['penalita'];
+                                    $ast = "<span class='text-danger align-middle ps-1'>*</span>";
+                                    $tooltip = "<div class='team-tooltip'>". htmlspecialchars($help->getTranslation("penality", $langfile)) .": {$s['penalita']} Pt -> ". $realpoint ."</div>";
+                                }
                                 $style = $help->createTeam($params->colore_sfondo ?? '#000000', $params->colore_testo ?? '#ffffff', $params->colore_bordo ?? '#000000');
                                 echo "<tr>";
                                 echo "<td><strong>{$pos}</strong></td>";
-                                echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
+                                echo "  <td>";
+                                echo "    <div class='team-wrapper'>";
+                                echo "      <div class='rounded-pill fw-bold px-4 py-2' style='{$style}'>";
+                                echo $help->getTeamNameByID($s['squadra_id']) . $ast;
+                                echo "      </div>";
+                                echo $tooltip;
+                                echo "    </div>";
+                                echo "  </td>";
                                 echo '<td><span class="badge bg-' . $badge . ' fs-6">'
                                     . htmlspecialchars($s['punti' . $ext])
                                     . '</span></td>';
@@ -510,7 +523,7 @@ function generate($tab, $help, $langfile, $db)
                 <div class="card h-100 shadow-sm">
                     <a href="?page=seasons_details&season_id=<?= urlencode($_GET['season_id']) ?>&tab=<?= $m ?>"
                         class="btn btn-success h-100 align-content-center p-2 fs-5 fw-bold">
-                        <span class="bi bi-<?=$icone[$i]?>"></span>
+                        <span class="bi bi-<?= $icone[$i] ?>"></span>
                         <?= $help->getTranslation($m, $langfile) ?>
                     </a>
                 </div>
