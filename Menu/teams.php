@@ -22,8 +22,8 @@ $squadre = $db->getAll("squadre");
                         <?= $name ?>
                     </a>
                     <div class="team-tooltip">
-                        <strong><?= $help->getTranslation('stadium', $langfile) ?>:</strong> <?= $params->stadio ?><br>
-                        <strong><?= $help->getTranslation('city', $langfile) ?>:</strong> <?= $params->citta ?>
+                        <strong><?= $help->getTranslation('stadium', $langfile) ?>:</strong> <?= $params->stadio ?? '' ?><br>
+                        <strong><?= $help->getTranslation('city', $langfile) ?>:</strong> <?= $params->citta ?? '' ?>
                     </div>
                 </div>
             </div>

@@ -143,16 +143,16 @@ function generate($tab, $help, $langfile, $db)
                                         // Parametri e stile della squadra
                                         $params = json_decode($help->getParamsbyID($cell['team'], 'squadre'));
                                         $style = $help->createTeam(
-                                            $params->colore_sfondo,
-                                            $params->colore_testo,
-                                            $params->colore_bordo
+                                            $params->colore_sfondo ?? '#000000',
+                                            $params->colore_testo ?? '#ffffff',
+                                            $params->colore_bordo ?? '#000000'
                                         );
                                         // Nome abbreviato
                                         $name = $help->getTeamNameByID($cell['team']);
                                         $abbr = strtoupper(substr($name, 0, 3));
                                         ?>
                                         <th colspan="<?= $cell['colspan'] ?>"
-                                            style="background-color: <?= $params->colore_sfondo ?>; color: <?= $params->colore_testo ?>;">
+                                            style="background-color: <?= $params->colore_sfondo ?? '#000000' ?>; color: <?= $params->colore_testo ?? '#ffffff' ?>;">
                                             <?= $abbr ?>
                                         </th>
                                     <?php endif; ?>
@@ -255,7 +255,7 @@ function generate($tab, $help, $langfile, $db)
                                 } else {
                                     $badge = "dark";  // Badge per le squadre normali
                                 }
-                                $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
+                                $style = $help->createTeam($params->colore_sfondo ?? '#000000', $params->colore_testo ?? '#ffffff', $params->colore_bordo ?? '#000000');
                                 echo "<tr>";
                                 echo "<td><strong>{$pos}</strong></td>";
                                 echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
@@ -303,7 +303,7 @@ function generate($tab, $help, $langfile, $db)
                             // Stampa i nomi delle squadre come intestazione
                             foreach ($squadrename as $key => $squadra) {
                                 $params = json_decode($help->getParamsbyID($key, "squadre"));
-                                $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
+                                $style = $help->createTeam($params->colore_sfondo ?? '#000000', $params->colore_testo ?? '#ffffff', $params->colore_bordo ?? '#000000');
 
                                 echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . substr($squadra, 0, 3) . "</div></td>";
                                 // Mostra i primi 3 caratteri del nome della squadra
@@ -314,7 +314,7 @@ function generate($tab, $help, $langfile, $db)
                         // Ora stampiamo i risultati per ogni squadra
                         foreach ($squadrename as $keyC => $squadra):
                             $params = json_decode($help->getParamsbyID($keyC, "squadre"));
-                            $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
+                            $style = $help->createTeam($params->colore_sfondo ?? '#000000', $params->colore_testo ?? '#ffffff', $params->colore_bordo ?? '#000000');
 
                             echo "<tr>";
                             echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $squadra . "</div></td>"; // Mostra il nome della squadra nella prima colonna
@@ -418,7 +418,11 @@ function generate($tab, $help, $langfile, $db)
                         <?php endif; ?>
 
                         <div class="col mb-4">
-                            <h2 class="text-center fw-bold"><?= $help->getTranslation('day', $langfile) . " " . $giornata ?></h2>
+                            <?php if ($giornata >= 100): ?>
+                                <h2 class="text-center fw-bold"><?= $help->getTranslation($help->giornateover100[$giornata], $langfile) ?></h2>
+                            <?php else: ?>
+                                <h2 class="text-center fw-bold"><?= $help->getTranslation('day', $langfile) . " " . $giornata ?></h2>
+                            <?php endif; ?>
                             <table class="table table-striped table-hover matchtable">
                                 <thead class="table-dark">
                                     <tr class="text-center">
@@ -439,14 +443,14 @@ function generate($tab, $help, $langfile, $db)
                                         $params1 = json_decode($help->getParamsbyID($m['squadra_casa_id'], "squadre"));
                                         $params2 = json_decode($help->getParamsbyID($m['squadra_trasferta_id'], "squadre"));
                                         $style1 = $help->createTeam(
-                                            $params1->colore_sfondo,
-                                            $params1->colore_testo,
-                                            $params1->colore_bordo
+                                            $params1->colore_sfondo ?? '#000000',
+                                            $params1->colore_testo ?? '#ffffff',
+                                            $params1->colore_bordo ?? '#000000'
                                         );
                                         $style2 = $help->createTeam(
-                                            $params2->colore_sfondo,
-                                            $params2->colore_testo,
-                                            $params2->colore_bordo
+                                            $params2->colore_sfondo ?? '#000000',
+                                            $params2->colore_testo ?? '#ffffff',
+                                            $params2->colore_bordo ?? '#000000'
                                         );
                                         // Badge “pill” squadre
                                         $home = "<span class='rounded-pill fw-bold px-3 py-1 text-nowrap' style= '" . $style1 . "'>

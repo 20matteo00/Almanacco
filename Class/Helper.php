@@ -24,6 +24,15 @@ class Helper
         'statistics',
     ];
 
+    public $giornateover100 = [
+        100 => "spareggio_retrocessione",
+        101 => "spareggio_retrocessione_andata",
+        102 => "spareggio_retrocessione_ritorno",
+        200 => "spareggio_scudetto",
+        201 => "spareggio_scudetto_andata",
+        202 => "spareggio_scudetto_ritorno",
+    ];
+
     public $lang = [
         'it',
         'en',

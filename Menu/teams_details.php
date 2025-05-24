@@ -12,7 +12,7 @@ if (!isset($_GET['team_id'])) {
 $activeTab = $_GET['tab'] ?? '';
 $squadra = $db->getOne("squadre", "id = ?", [$_GET['team_id']]);
 $params = json_decode($help->getParamsbyID($squadra['id'], "squadre"));
-$style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
+$style = $help->createTeam($params->colore_sfondo ?? '#000000', $params->colore_testo ?? '#ffffff', $params->colore_bordo ?? '#000000');
 
 $stagioni = $db->getAll("stagioni", '*', '', [], 'anno DESC');
 ?>
