@@ -8,10 +8,15 @@ if (!isset($_GET['season_id'])) {
     exit;
 }
 
-// Parametro tab attivo (default seasons_list)
+// Parametro tab attivo (default matches)
 $activeTab = $_GET['tab'] ?? 'matches';
 
-
+$icone = [
+    "calendar",
+    "bar-chart",
+    "table",
+    "graph-up",
+];
 // Funzione di rendering
 function generate($tab, $help, $langfile, $db)
 {
@@ -419,7 +424,8 @@ function generate($tab, $help, $langfile, $db)
 
                         <div class="col mb-4">
                             <?php if ($giornata >= 100): ?>
-                                <h2 class="text-center fw-bold"><?= $help->getTranslation($help->giornateover100[$giornata], $langfile) ?></h2>
+                                <h2 class="text-center fw-bold"><?= $help->getTranslation($help->giornateover100[$giornata], $langfile) ?>
+                                </h2>
                             <?php else: ?>
                                 <h2 class="text-center fw-bold"><?= $help->getTranslation('day', $langfile) . " " . $giornata ?></h2>
                             <?php endif; ?>
@@ -490,15 +496,14 @@ function generate($tab, $help, $langfile, $db)
 <div class="container py-5">
 
     <div class="row mb-4">
-        <?php foreach ($help->menu_seasons as $m): ?>
+        <?php foreach ($help->menu_seasons as $i => $m): ?>
             <div class="col">
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body text-center">
-                        <a href="?page=seasons_details&season_id=<?= urlencode($_GET['season_id']) ?>&tab=<?= $m ?>"
-                            class="card-title h5 text-decoration-none">
-                            <?= $help->getTranslation($m, $langfile) ?>
-                        </a>
-                    </div>
+                <div class="card h-100 shadow-sm">
+                    <a href="?page=seasons_details&season_id=<?= urlencode($_GET['season_id']) ?>&tab=<?= $m ?>"
+                        class="btn btn-success h-100 align-content-center p-2 fs-5 fw-bold">
+                        <span class="bi bi-<?=$icone[$i]?>"></span>
+                        <?= $help->getTranslation($m, $langfile) ?>
+                    </a>
                 </div>
             </div>
         <?php endforeach; ?>

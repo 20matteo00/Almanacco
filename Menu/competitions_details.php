@@ -8,22 +8,31 @@ if (!isset($_GET['comp_id'])) {
     exit;
 }
 
-// Parametro tab attivo (default seasons_list)
-$activeTab = $_GET['tab'] ?? 'seasons_list';
+// Parametro tab attivo (default seasons)
+$activeTab = $_GET['tab'] ?? 'seasons';
+
+$icone = [
+    "list-task",
+    "shield",
+    "people",
+    "trophy",
+    "bar-chart",
+    "graph-up",
+];
 
 // Funzione di rendering
 function generate($tab, $help, $langfile, $db)
 {
     $stagioni = $db->getAll("stagioni", '*', 'competizione_id = ?', [$_GET['comp_id']], "anno DESC");
     switch ($tab) {
-        case 'participating_teams':
+        case 'teams':
             $rows = $help->getTeamsPartecipant($_GET['comp_id']);
             if (empty($rows)) {
                 echo '<h2>' . $help->getTranslation('no_teams', $langfile) . '</h2>';
                 return;
             }
             ?>
-            <h2><?= $help->getTranslation('participating_teams', $langfile) ?></h2>
+            <h2><?= $help->getTranslation('teams', $langfile) ?></h2>
             <div class="table-responsive text-center">
                 <table class="table table-striped">
                     <thead class="table-dark">
@@ -412,7 +421,7 @@ function generate($tab, $help, $langfile, $db)
                     <tbody>
                         <?php
                         $pos = 1;
-                        
+
                         foreach ($classifica as $s) {
                             $params = json_decode($help->getParamsbyID($s['squadra_id'], "squadre"));
                             $edition = $help->getCountEdition($s['squadra_id'], $_GET['comp_id']);
@@ -446,7 +455,7 @@ function generate($tab, $help, $langfile, $db)
 
         default:
             ?>
-            <h2><?= $help->getTranslation('seasons_list', $langfile) ?></h2>
+            <h2><?= $help->getTranslation('seasons', $langfile) ?></h2>
             <div class="table-responsive text-center">
                 <table class="table table-striped">
                     <thead class="table-dark">
@@ -492,15 +501,14 @@ function generate($tab, $help, $langfile, $db)
 <div class="container py-5">
 
     <div class="row mb-4">
-        <?php foreach ($help->menu_competitions as $m): ?>
+        <?php foreach ($help->menu_competitions as $i => $m): ?>
             <div class="col">
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body text-center">
-                        <a href="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>&tab=<?= $m ?>"
-                            class="card-title h5 text-decoration-none">
-                            <?= $help->getTranslation($m, $langfile) ?>
-                        </a>
-                    </div>
+                <div class="card h-100 shadow-sm">
+                    <a href="?page=competitions_details&comp_id=<?= urlencode($_GET['comp_id']) ?>&tab=<?= $m ?>"
+                        class="btn btn-success h-100 align-content-center p-2 fs-5 fw-bold">
+                        <span class="bi bi-<?= $icone[$i] ?>"></span>
+                        <?= $help->getTranslation($m, $langfile) ?>
+                    </a>
                 </div>
             </div>
         <?php endforeach; ?>

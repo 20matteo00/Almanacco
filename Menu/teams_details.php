@@ -8,7 +8,7 @@ if (!isset($_GET['team_id'])) {
     exit;
 }
 
-// Parametro tab attivo (default seasons_list)
+// Parametro tab attivo
 $activeTab = $_GET['tab'] ?? '';
 $squadra = $db->getOne("squadre", "id = ?", [$_GET['team_id']]);
 $params = json_decode($help->getParamsbyID($squadra['id'], "squadre"));

@@ -10,11 +10,12 @@ class Helper
     ];
 
     public $menu_competitions = [
-        'seasons_list',
-        'participating_teams',
+        'seasons',
+        'teams',
         'direct_clashes',
         'champions',
-        'all_time_table'
+        'all_time_table',
+        'statistics',
     ];
 
     public $menu_seasons = [
