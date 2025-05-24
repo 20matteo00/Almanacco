@@ -24,6 +24,22 @@ $icone = [
 function generate($tab, $help, $langfile, $db)
 {
     $stagioni = $db->getAll("stagioni", '*', 'competizione_id = ?', [$_GET['comp_id']], "anno DESC");
+    $tutte_le_partite = [];
+
+    foreach ($stagioni as $s) {
+        $partite = $db->getAll("partite", "*", "stagione_id = ?", [$s['codice_stagione']]);
+        $tutte_le_partite = array_merge($tutte_le_partite, $partite);
+    }
+    $location = $_POST['location'] ?? '';
+
+    if ($location == 'home') {
+        $ext = '_c';
+    } elseif ($location == 'away') {
+        $ext = '_t';
+    } else {
+        $ext = '';
+    }
+    $classifica_all = $help->getClassifica($tutte_le_partite, $ext);
     switch ($tab) {
         case 'teams':
             $rows = $help->getTeamsPartecipant($_GET['comp_id']);
@@ -367,22 +383,7 @@ function generate($tab, $help, $langfile, $db)
             break;
 
         case 'all_time_table':
-            $tutte_le_partite = [];
 
-            foreach ($stagioni as $s) {
-                $partite = $db->getAll("partite", "*", "stagione_id = ?", [$s['codice_stagione']]);
-                $tutte_le_partite = array_merge($tutte_le_partite, $partite);
-            }
-            $location = $_POST['location'] ?? '';
-
-            if ($location == 'home') {
-                $ext = '_c';
-            } elseif ($location == 'away') {
-                $ext = '_t';
-            } else {
-                $ext = '';
-            }
-            $classifica = $help->getClassifica($tutte_le_partite, $ext);
             ?>
             <div class="mini-menu my-4">
                 <form action="" method="post" class="d-flex flex-column align-items-center gap-3">
@@ -422,7 +423,7 @@ function generate($tab, $help, $langfile, $db)
                         <?php
                         $pos = 1;
 
-                        foreach ($classifica as $s) {
+                        foreach ($classifica_all as $s) {
                             $params = json_decode($help->getParamsbyID($s['squadra_id'], "squadre"));
                             $edition = $help->getCountEdition($s['squadra_id'], $_GET['comp_id']);
                             $badge = "dark";  // Badge per le squadre normali
@@ -452,6 +453,48 @@ function generate($tab, $help, $langfile, $db)
             <?php
             break;
 
+        case "statistics":
+            $statistiche = $help->getStatistics($classifica_all);
+            ?>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col"><?= htmlspecialchars($help->getTranslation("max", $langfile)) ?></th>
+                            <th scope="col"><?= htmlspecialchars($help->getTranslation("min", $langfile)) ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($statistiche['min'] as $key => $minData):
+                            $maxData = $statistiche['max'][$key];
+                            $minTeams = implode(', ', $minData['teams']);
+                            $maxTeams = implode(', ', $maxData['teams']);
+                            ?>
+                            <tr>
+                                <th scope="row"><?= htmlspecialchars($help->getTranslation($key, $langfile)) ?></th>
+                                <td>
+                                    <span>
+                                        <strong>
+                                            <?= htmlspecialchars($maxTeams) ?>
+                                        </strong> (<?= htmlspecialchars($maxData['value']) ?>)
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>
+                                        <strong>
+                                            <?= htmlspecialchars($minTeams) ?>
+                                        </strong> (<?= htmlspecialchars($minData['value']) ?>)
+                                    </span>
+                                </td>
+
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+            break;
 
         default:
             ?>
