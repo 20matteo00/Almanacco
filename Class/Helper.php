@@ -132,12 +132,14 @@ class Helper
             . "border: 3px solid {$bordo} !important;";
     }
 
-    public function getCountEdition($id, $comp){
+    public function getCountEdition($id, $comp)
+    {
         $stagioni = $this->db->getAll("stagioni", "squadre", "competizione_id = ?", [$comp]);
         $num = 0;
-        foreach ($stagioni as $s){
+        foreach ($stagioni as $s) {
             $squadre = json_decode($s['squadre'], true);
-            if (in_array($id, $squadre)) $num++;
+            if (in_array($id, $squadre))
+                $num++;
         }
         return $num;
     }
@@ -361,5 +363,21 @@ class Helper
         return $winner;
     }
 
+    public function getAndamento(array $partite)
+    {
+        $andamento = [];
+        $partiteFinoAdOra = [];
+
+        foreach ($partite as $partita) {
+            $giornata = $partita['giornata'];
+            $partiteFinoAdOra[] = $partita;
+
+            // calcola classifica solo alla fine di ogni giornata
+            // supponiamo che le partite siano ordinate per giornata
+            $andamento[$giornata] = $this->getClassifica($partiteFinoAdOra);
+        }
+
+        return $andamento;
+    }
 
 }

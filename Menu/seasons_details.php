@@ -68,6 +68,9 @@ function generate($tab, $help, $langfile, $db)
                         <button type="submit" class="btn btn-secondary" name="location" value="all">
                             <?= $help->getTranslation('general', $langfile) ?>
                         </button>
+                        <button type="submit" class="btn btn-secondary" name="trend" value="trend">
+                            <?= $help->getTranslation('trend', $langfile) ?>
+                        </button>
                         <button type="submit" class="btn btn-secondary" name="location" value="home">
                             <?= $help->getTranslation('home', $langfile) ?>
                         </button>
@@ -99,60 +102,181 @@ function generate($tab, $help, $langfile, $db)
                 </form>
             </div>
 
-            <div class="table-responsive mytable">
-                <table class="table table-hover table-striped align-middle text-center">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th><?= $help->getTranslation('team', $langfile) ?></th>
-                            <th>Pt</th>
-                            <th>G</th>
-                            <th>V</th>
-                            <th>N</th>
-                            <th>P</th>
-                            <th>GF</th>
-                            <th>GS</th>
-                            <th>DR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $pos = 1;
-                        $promo = $season_params->promozione;
-                        $retro = $season_params->retrocessione;
-                        $totsquadre = count($classifica);
-                        $postoretro = $totsquadre - $retro;
-                        foreach ($classifica as $s) {
-                            $params = json_decode($help->getParamsbyID($s['squadra_id'], "squadre"));
-                            // Assegna il badge in base alla posizione
-                            if ($pos <= $promo) {
-                                $badge = "success";  // Badge per le squadre in promozione
-                            } elseif ($pos > $postoretro) {
-                                $badge = "danger";  // Badge per le squadre in retrocessione
-                            } else {
-                                $badge = "dark";  // Badge per le squadre normali
-                            }
-                            $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
-                            echo "<tr>";
-                            echo "<td><strong>{$pos}</strong></td>";
-                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
-                            echo '<td><span class="badge bg-' . $badge . ' fs-6">'
-                                . htmlspecialchars($s['punti' . $ext])
-                                . '</span></td>';
-                            echo '<td>' . htmlspecialchars($s['giocate' . $ext]) . '</td>';
-                            echo '<td>' . htmlspecialchars($s['vittorie' . $ext]) . '</td>';
-                            echo '<td>' . htmlspecialchars($s['pareggi' . $ext]) . '</td>';
-                            echo '<td>' . htmlspecialchars($s['sconfitte' . $ext]) . '</td>';
-                            echo '<td>' . htmlspecialchars($s['gol_fatti' . $ext]) . '</td>';
-                            echo '<td>' . htmlspecialchars($s['gol_subiti' . $ext]) . '</td>';
-                            echo '<td>' . htmlspecialchars($s['diff_reti' . $ext]) . '</td>';
-                            echo "</tr>";
-                            $pos++;
+            <?php if (isset($_POST['trend']) && $_POST['trend'] == 'trend'): ?>
+                <?php $andamento = $help->getAndamento($partite); ?>
+                <div class="table-responsive">
+                    <?php
+                    // 1) Raccogli i leader di ogni giornata (o `null` se pareggio)
+                    $leaders = [];
+                    foreach ($andamento as $giornata => $classifica) {
+                        // Se c’è un ex aequo in testa, mettiamo `null`
+                        if ($classifica[0]['punti'] === $classifica[1]['punti']) {
+                            $leaders[] = null;
+                        } else {
+                            $leaders[] = $classifica[0]['squadra_id'];
                         }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
+                    }
+
+                    // 2) Trasforma i leader in run con colspan
+                    $cells = [];
+                    $tot = count($leaders);
+                    for ($i = 0; $i < $tot; ) {
+                        $team = $leaders[$i];
+                        // conta la lunghezza del blocco
+                        $len = 1;
+                        while ($i + $len < $tot && $leaders[$i + $len] === $team) {
+                            $len++;
+                        }
+                        $cells[] = ['team' => $team, 'colspan' => $len];
+                        $i += $len;
+                    }
+                    ?>
+
+                    <table class="table table-hover table-bordered table-striped text-center align-middle mb-5">
+                        <thead>
+                            <tr>
+                                <?php foreach ($cells as $cell): ?>
+                                    <?php if ($cell['team'] === null): ?>
+                                        <th colspan="<?= $cell['colspan'] ?>" style="background-color: grey;"></th>
+                                    <?php else: ?>
+                                        <?php
+                                        // Parametri e stile della squadra
+                                        $params = json_decode($help->getParamsbyID($cell['team'], 'squadre'));
+                                        $style = $help->createTeam(
+                                            $params->colore_sfondo,
+                                            $params->colore_testo,
+                                            $params->colore_bordo
+                                        );
+                                        // Nome abbreviato
+                                        $name = $help->getTeamNameByID($cell['team']);
+                                        $abbr = strtoupper(substr($name, 0, 3));
+                                        ?>
+                                        <th colspan="<?= $cell['colspan'] ?>"
+                                            style="background-color: <?= $params->colore_sfondo ?>; color: <?= $params->colore_testo ?>;">
+                                            <?= $abbr ?>
+                                        </th>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-secondary">
+                                <?php foreach (array_keys($andamento) as $giornata): ?>
+                                    <td><?= $giornata ?></td>
+                                <?php endforeach; ?>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <?php
+                // 1) Estrai la lista di tutte le squadre (ID e nome)
+                $squadre = [];
+                foreach ($andamento as $giornata => $classifica) {
+                    foreach ($classifica as $row) {
+                        $id = $row['squadra_id'];
+                        $squadre[$id] = $help->getTeamNameByID($id);
+                    }
+                }
+                // Ordino le squadre per nome
+                asort($squadre, SORT_STRING);
+
+                // 2) Lista delle giornate
+                $giornate = array_keys($andamento);
+                ?>
+
+                <div class="table-responsive mytable">
+                    <table class="table table-hover table-bordered table-striped text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Squadra</th>
+                                <?php foreach ($giornate as $g): ?>
+                                    <th scope="col"><?= $g ?></th>
+                                <?php endforeach; ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($squadre as $teamId => $teamName): ?>
+                                <tr>
+                                    <!-- Nome squadra abbreviato o intero -->
+                                    <td class="fw-bold" scope="row"><?= htmlspecialchars($teamName, ENT_QUOTES, 'UTF-8') ?></td>
+
+                                    <?php foreach ($giornate as $g): ?>
+                                        <?php
+                                        // Cerco nella giornata $g la riga con questa squadra
+                                        $punti = '-';
+                                        foreach ($andamento[$g] as $row) {
+                                            if ($row['squadra_id'] == $teamId) {
+                                                $punti = $row['punti'];
+                                                break;
+                                            }
+                                        }
+                                        ?>
+                                        <td><?= $punti ?></td>
+                                    <?php endforeach; ?>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+            <?php else: ?>
+                <div class="table-responsive mytable">
+                    <table class="table table-hover table-striped align-middle text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th><?= $help->getTranslation('team', $langfile) ?></th>
+                                <th>Pt</th>
+                                <th>G</th>
+                                <th>V</th>
+                                <th>N</th>
+                                <th>P</th>
+                                <th>GF</th>
+                                <th>GS</th>
+                                <th>DR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $pos = 1;
+                            $promo = $season_params->promozione;
+                            $retro = $season_params->retrocessione;
+                            $totsquadre = count($classifica);
+                            $postoretro = $totsquadre - $retro;
+                            foreach ($classifica as $s) {
+                                $params = json_decode($help->getParamsbyID($s['squadra_id'], "squadre"));
+                                // Assegna il badge in base alla posizione
+                                if ($pos <= $promo) {
+                                    $badge = "success";  // Badge per le squadre in promozione
+                                } elseif ($pos > $postoretro) {
+                                    $badge = "danger";  // Badge per le squadre in retrocessione
+                                } else {
+                                    $badge = "dark";  // Badge per le squadre normali
+                                }
+                                $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
+                                echo "<tr>";
+                                echo "<td><strong>{$pos}</strong></td>";
+                                echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $help->getTeamNameByID($s['squadra_id']) . "</div></td>";
+                                echo '<td><span class="badge bg-' . $badge . ' fs-6">'
+                                    . htmlspecialchars($s['punti' . $ext])
+                                    . '</span></td>';
+                                echo '<td>' . htmlspecialchars($s['giocate' . $ext]) . '</td>';
+                                echo '<td>' . htmlspecialchars($s['vittorie' . $ext]) . '</td>';
+                                echo '<td>' . htmlspecialchars($s['pareggi' . $ext]) . '</td>';
+                                echo '<td>' . htmlspecialchars($s['sconfitte' . $ext]) . '</td>';
+                                echo '<td>' . htmlspecialchars($s['gol_fatti' . $ext]) . '</td>';
+                                echo '<td>' . htmlspecialchars($s['gol_subiti' . $ext]) . '</td>';
+                                echo '<td>' . htmlspecialchars($s['diff_reti' . $ext]) . '</td>';
+                                echo "</tr>";
+                                $pos++;
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
             <?php
             break;
 
@@ -193,7 +317,7 @@ function generate($tab, $help, $langfile, $db)
                             $style = $help->createTeam($params->colore_sfondo, $params->colore_testo, $params->colore_bordo);
 
                             echo "<tr>";
-                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='".$style."'>" . $squadra . "</div></td>"; // Mostra il nome della squadra nella prima colonna
+                            echo "<td><div class='rounded-pill fw-bold px-4 py-2' style='" . $style . "'>" . $squadra . "</div></td>"; // Mostra il nome della squadra nella prima colonna
             
                             // Per ogni avversaria nella colonna, cerchiamo il risultato della partita
                             foreach ($squadrename as $keyT => $avversaria):

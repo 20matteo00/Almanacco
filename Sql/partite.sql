@@ -748,3 +748,5 @@ INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadr
 INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','37','19','8','0','0','2025-05-18','[]');
 INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','37','22','7','1','0','2025-05-18','[]');
 INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','37','60','27','1','3','2025-05-18','[]');
+INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','38','8','14','2','0','2025-05-23','[]');
+INSERT IGNORE INTO `partite` (`stagione_id`,`giornata`,`squadra_casa_id`,`squadra_trasferta_id`,`gol_casa`,`gol_trasferta`,`data_partita`,`params`) VALUES ('1_2024','38','30','1','0','2','2025-05-23','[]');
