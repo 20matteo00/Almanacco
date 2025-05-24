@@ -246,19 +246,28 @@ function generate($tab, $help, $langfile, $db)
                         <tbody>
                             <?php
                             $pos = 1;
-                            $promo = $season_params->promozione;
-                            $retro = $season_params->retrocessione;
+                            $promo = $season_params->promozione ?? 0;
+                            $retro = $season_params->retrocessione ?? 0;
+                            $playoff = $season_params->playoff ?? 0;
+                            $playout = $season_params->playout ?? 0;
+
                             $totsquadre = count($classifica);
-                            $postoretro = $totsquadre - $retro;
+
+                            $inizioplayout = $totsquadre - ($retro + $playout);
+                            $inizioretro = $totsquadre - $retro;
                             foreach ($classifica as $s) {
                                 $params = json_decode($help->getParamsbyID($s['squadra_id'], "squadre"));
                                 // Assegna il badge in base alla posizione
                                 if ($pos <= $promo) {
                                     $badge = "success";  // Badge per le squadre in promozione
-                                } elseif ($pos > $postoretro) {
-                                    $badge = "danger";  // Badge per le squadre in retrocessione
+                                } elseif ($pos <= ($promo + $playoff)) {
+                                    $badge = "info";  // Badge per le squadre in promozione
+                                } elseif ($pos <= $inizioplayout) {
+                                    $badge = "dark";  // Badge per le squadre in promozione
+                                } elseif ($pos <= $inizioretro) {
+                                    $badge = "warning";  // Badge per le squadre in retrocessione
                                 } else {
-                                    $badge = "dark";  // Badge per le squadre normali
+                                    $badge = "danger";  // Badge per le squadre normali
                                 }
                                 $style = $help->createTeam($params->colore_sfondo ?? '#000000', $params->colore_testo ?? '#ffffff', $params->colore_bordo ?? '#000000');
                                 echo "<tr>";

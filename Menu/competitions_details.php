@@ -63,9 +63,9 @@ function generate($tab, $help, $langfile, $db)
                             <?php
                             $params = json_decode($row['params']);
                             $style = $help->createTeam(
-                                $params->colore_sfondo,
-                                $params->colore_testo,
-                                $params->colore_bordo
+                                $params->colore_sfondo ?? '#000000',
+                                $params->colore_testo ?? '#ffffff',
+                                $params->colore_bordo ?? '#000000'
                             );
                             ?>
                             <tr>
