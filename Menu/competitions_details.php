@@ -321,7 +321,7 @@ function generate($tab, $help, $langfile, $db)
                         <tbody>
                             <?php foreach ($partite as $p): ?>
                                 <tr>
-                                    <td><?= explode("_", $p['stagione_id'])[1] ?></td>
+                                    <td><?= explode("_", $p['stagione_id'])[1]."/".explode("_", $p['stagione_id'])[1]+1 ?></td>
                                     <td><?= $p['giornata'] ?></td>
                                     <td><?= $help->getTeamNameByID($p['squadra_casa_id']) ?></td>
                                     <td><?= $p['gol_casa'] ?></td>

@@ -342,18 +342,22 @@ $partite = $db->getAll('partite', '*', '', [], 'data_partita DESC LIMIT 20');
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($squadre as $s): ?>
-                                    <?php $params = json_decode($s['params'], true); ?>
+                                    <?php 
+                                    $params = json_decode($s['params'], true); 
+                                    $style = $help->createTeam(
+                                        $params->colore_sfondo ?? '#000000',
+                                        $params->colore_testo ?? '#ffffff',
+                                        $params->colore_bordo ?? '#000000'
+                                    );
+                                    ?>
                                     <tr>
                                         <td>
-                                            <div class="rounded-pill p-2 text-center fw-bold" style="
-                                            background-color: <?= htmlspecialchars($params['colore_sfondo']) ?>; 
-                                            color: <?= htmlspecialchars($params['colore_testo']) ?>; 
-                                            border: 2px solid <?= htmlspecialchars($params['colore_bordo']) ?>;">
+                                            <div class="rounded-pill p-2 text-center fw-bold" style="<?= $style ?>">
                                                 <?= htmlspecialchars(strtoupper($s['nome'])) ?>
                                             </div>
                                         </td>
-                                        <td><?= htmlspecialchars($params['citta']) ?></td>
-                                        <td><?= htmlspecialchars($params['stadio']) ?></td>
+                                        <td><?= htmlspecialchars($params['citta'] ?? '') ?></td>
+                                        <td><?= htmlspecialchars($params['stadio'] ?? '') ?></td>
                                         <td>
                                             <!-- FORM MODIFICA/ELIMINA -->
                                             <form method="post" class="d-inline" action="">
