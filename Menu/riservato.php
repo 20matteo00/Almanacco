@@ -5,12 +5,14 @@ if (isset($_POST['login'])) {
     $password = $_POST['password'] ?? '';
 
     $user = $db->getOne("users", "username = '$username'");
-    if (password_verify($password, $user['password']) && $username === $user['username']) {
-        $_SESSION['logged'] = true;
-        $_SESSION['level'] = $user['livello'];
-        $_SESSION['username'] = $user['username'];
-    } else {
-        $error = "Credenziali non valide.";
+    if ($user) {
+        if ($user && !is_null($password) && password_verify($password, $user['password']) && $username === $user['username']) {
+            $_SESSION['logged'] = true;
+            $_SESSION['level'] = $user['livello'];
+            $_SESSION['username'] = $user['username'];
+        } else {
+            $error = "Credenziali non valide.";
+        }
     }
 }
 

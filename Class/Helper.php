@@ -160,9 +160,10 @@ class Helper
      *
      * @param array $partite Array di squadre da getClassifica()
      * @param string $ext Stringa per capire casa/trasferta
+     * @param int $valpunti intero per indicare i punti a vittoria
      * @return array 
      */
-    public function getClassifica($partite, $ext = '')
+    public function getClassifica($partite, $ext = '', $valpunti = 3)
     {
         $classifica = [];
 
@@ -230,12 +231,12 @@ class Helper
                 // Casa vince
                 $classifica[$casa]['vittorie_c']++;
                 $classifica[$trasferta]['sconfitte_t']++;
-                $classifica[$casa]['punti_c'] += 3;
+                $classifica[$casa]['punti_c'] += $valpunti;
             } elseif ($golCasa < $golTrasferta) {
                 // Trasferta vince
                 $classifica[$trasferta]['vittorie_t']++;
                 $classifica[$casa]['sconfitte_c']++;
-                $classifica[$trasferta]['punti_t'] += 3;
+                $classifica[$trasferta]['punti_t'] += $valpunti;
             } else {
                 // Pareggio
                 $classifica[$casa]['pareggi_c']++;

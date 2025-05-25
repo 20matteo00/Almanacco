@@ -1,8 +1,8 @@
 <?php
-$stagione = '2_2024';
+$stagione = '1_2021';
 $input = 'file.yaml';
 
-$annobase = 2024;
+$annobase = 2021;
 $annofine = $annobase+1;
 $map = [
     'Inter' => 1,
@@ -227,7 +227,7 @@ foreach ($lines as $num => $line) {
         }
     } else {
         // Riga non riconosciuta
-        echo "Riga non parsata #{ $num}: '{ $line}'<br>";
+        echo "Errore: Riga non parsata #{ $num}: '{ $line}'<br>";
         continue;
     }
 
@@ -235,7 +235,7 @@ foreach ($lines as $num => $line) {
     $homeId = $map[trim($home)] ?? null;
     $awayId = $map[trim($away)] ?? null;
     if (!$homeId || !$awayId) {
-        echo "Squadra non trovata riga #{ $num}: home='{ $home}', away='{ $away}'<br>";
+        echo "Errore: Squadra non trovata riga #{ $num}: home='{ $home}', away='{ $away}'<br>";
         continue;
     }
 
