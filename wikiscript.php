@@ -1,12 +1,14 @@
 <?php
 include_once 'Class/Parser.php';
 
-$comp = "Serie_A";
-$annoI = 1929;
-$annoF = 2025;
 
-for ($anno = $annoI; $anno < $annoF; $anno++) {
-    $stringa = $comp . '_' . $anno . "-" . $anno + 1;
-    $parser = new Parser($stringa);
-    $parser->esegui();
+function go ($comp, $annoI, $annoF) {
+    for ($anno = $annoI; $anno < $annoF; $anno++) {
+        $stringa = $comp . '_' . $anno . "-" . $anno + 1;
+        $parser = new Parser($stringa, $comp);
+        $parser->esegui();
+    }
 }
+
+go("Serie_A", 1929, 2025);
+go("Serie_B", 1929, 2025);

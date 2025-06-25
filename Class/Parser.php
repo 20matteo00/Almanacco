@@ -3,11 +3,14 @@
 class Parser
 {
     private string $page;
+
+    private string $comp;
     private array $anni;
 
-    public function __construct(string $page)
+    public function __construct(string $page, string $comp)
     {
         $this->page = $page;
+        $this->comp = $comp;
         $this->anni = $this->estraiAnni($page);
     }
 
@@ -234,7 +237,7 @@ class Parser
 
     private function salvaJson(array $giornate): string
     {
-        $fn = 'Json/' . $this->page . '.json';
+        $fn = 'Json/' . $this->comp . '/' . $this->page . '.json';
         file_put_contents($fn, json_encode($giornate, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         return $fn;
     }
